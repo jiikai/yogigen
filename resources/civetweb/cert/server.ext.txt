@@ -1,6 +1,0 @@
-[ v3_ca ] 
-[ req ] 
-req_extensions = my_extensions 
-[ my_extensions ] 
-extendedKeyUsage=serverAuth 
-crlDistributionPoints=URI:http://localhost/crl.pem 

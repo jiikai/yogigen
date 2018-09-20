@@ -485,7 +485,7 @@ error:
 bstring YogiGen_generate(YogiGen *yogen)
 {
     Format_String *formats = random_formats(yogen);
-    check(formats, "Database failure.");
+    check(formats, "Failed to randomize a format string.");
     Substitution_Data *s_data = process_formats(yogen, formats);
     check(s_data, "String processing failure for: %s", formats->str->data);
     bstring out = prettify(yogen, s_data);

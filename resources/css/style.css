@@ -1,9 +1,9 @@
 @charset "utf-8";
 
 @font-face {
-    font-family: tfarrow;
+    font-family: 'tfarrow';
     font-style:normal;
-    font-weight:400;
+    font-weight:300;
     src:url('../fonts/TFArrow-Bold.eot'); /* IE9 Compat Modes */
     src:url('../fonts/TFArrow-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
         url('../fonts/TFArrow-Bold.woff2') format('woff2'), /* Modern browsers */
@@ -29,25 +29,27 @@
 body {
     background-color: #8B3A3A;
     color: #FEF1E1;
-    font-family:inherit;
+    font-family:'tfarrow';
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 #wrapper {
     align-items: center;
     display: flex;
-    height: 150px;
+    font-family:inherit;
+    height: 20vh;
     justify-content: center;
-    width: 100%
+    width: 100%;
 }
 
 #wrapper2 {
     align-items: center;
     display: flex;
-    height: 450px;
+    font-family:inherit;
+    height: 66vh;
     justify-content: center;
-    width: 100%
+    width: 100%;
 }
 
 .button {
@@ -55,11 +57,11 @@ body {
     color: #FEF1E1;
     cursor: pointer;
     font-family: inherit;
-    font-size: 2vw;
+    font-size: 4vw;
     font-style: normal;
     font-weight: lighter;
-    height: 120px;
-    width: 700px
+    height: 15vh;
+    width: 66vw;
 }
 
 .button:hover {
@@ -71,11 +73,11 @@ body {
     color: #FEF1E1;
     cursor: pointer;
     font-family: inherit;
-    font-size: 1.75vw;
+    font-size: 3vw;
     font-style: italic;
     font-weight: lighter;
-    height: 60px;
-    width: 432px
+    height: 10vh;
+    width: 42vw;
 }
 
 .button2:hover {
@@ -84,9 +86,11 @@ body {
 
 .container {
     font-size: 5vw;
+    margin:auto;
     position: relative;
     text-align: center;
-    top: 70px
+    top: 70px;
+    width: 66vw;
 }
 
 .fade-in {

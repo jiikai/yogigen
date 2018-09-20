@@ -7,7 +7,7 @@ LOGDIR := log
 LIBDIR := lib
 TESTDIR := test
 PREFIX := /usr/local
-INCLUDE := -I$(PREFIX)/include -I/postgresql -Isrc
+INCLUDE := -I$(PREFIX)/include -I/usr/include/postgresql -Isrc
 LIBINCLUDE := -L$(PREFIX)/lib -L/postgresql
 STD := -std=c99 -pedantic
 STACK := -fstack-protector -Wstack-protector
@@ -38,7 +38,7 @@ valgrind:
 		--show-leak-kinds=all \
 		--log-file=$(LOGDIR)/$@-valgrind.log \
 		$(BINDIR)/$(BINARY)
-	@echo -en "\n***Log file: $(LOGDIR)/$@-valgrind.log***\n"
+	@echo -en "\n- - - Log file: $(LOGDIR)/$@-valgrind.log - - -\n"
 
 
 # Compile tests and run the test binary

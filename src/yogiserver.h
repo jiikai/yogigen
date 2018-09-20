@@ -93,22 +93,33 @@
 #define AUTH_DOM_CHECK "no"
 
 // Valid relative URIs
-#define FRNTPG_URI "/"
+#define INDEX_URI "/"
 #define GEN_URI "/gen"
 #define PERMALINK_URI "/permalink"
 #define GETBYID_URI "/getbyid"
-#define EXIT_URI "/exit"
+#ifndef HEROKU
+    #define EXIT_URI "/exit"
+#endif
+// For serving the css and fonts
+#define CSS_URI "/css/style.css"
+#define FONT_URI "/fonts"
 
 // id in /getbyid is a 64-byte hash
 #define HASHLEN 64
 
-// HTML template paths
-#define YOGIGEN_HTML "../resources/html/yogigen.html"
-#define YOGIGEN_PERMALINK_HTML "../resources/html/yogigen_permalink.html"
-#define YOGIGEN_GETBYID_HTML "../resources/html/yogigen_getbyid.html"
+// HTML template paths (relative to the running binary)
+#define YOGIGEN_INDEX_HTML "../resources/index.html"
+#define YOGIGEN_GEN_HTML "../resources/gen.html"
+#define YOGIGEN_PERMALINK_HTML "../resources/permalink.html"
+#define YOGIGEN_GETBYID_HTML "../resources/getbyid.html"
+
+// CSS & font paths (relative to document root)
+#define YOGIGEN_STYLE_CSS "../resources/css/style.css"
+#define YOGIGEN_STYLE_FONT "../resources/fonts/TFArrow-Bold.%s"
 
 // HTTP response headers currently used
 #define HTTP_RES_200 "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n"
+#define HTTP_RES_404 "HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n"
 #define HTTP_RES_405 "HTTP/1.1 405 Method Not Allowed\r\nAllow: GET\r\nConnection: close\r\n\r\n"
 #define HTTP_RES_500 "HTTP/1.1 500 Internal Server Error\r\nConnection: close\r\n\r\n"
 
@@ -141,7 +152,8 @@ typedef struct yogiserver {
     struct sigaction sigactor;
     YogiGen *yogen;
     bstring sys_info;
-    bstring html_template;
+    bstring html_template_index;
+    bstring html_template_gen;
     bstring html_template_permalink;
     bstring html_template_getbyid;
     const char *btn_txts[BTN_TXT_COUNT];

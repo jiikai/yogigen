@@ -2,4 +2,5 @@
 
 TODO:
 - write this readme
-- write unit tests
+- unit tests
+- pretty up the page layout
