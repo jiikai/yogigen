@@ -134,10 +134,8 @@
 // Error messages
 #define YOGISERVER_STARTUP_FAILED "Server failed %s." // to start, fetching ports, ...
 #define YOGISERVER_405_NOT_ALLOWED "Method %s not allowed." // [HTTP method]
-#define YOGISERVER_DB_ERROR "Error in %s database." // inserting to, selecting from
-#define YOGISERVER_GEN_ERROR "YogiGen failed %s." // to generate
-/*#define YOGISERVER_ERRMSG_5
-#define YOGISERVER_ERRMSG_6*/
+#define YOGISERVER_DB_ERROR "Error in %s database." // inserting to, selecting from, connecting to ...
+#define YOGISERVER_GEN_ERROR "YogiGen failed %s." // to generate string, to allocate requisite memory ...
 #define YOGISERVER_FILE_ERR "Failed %s file %s" // [fileop] [path]
 
 // Port protocol getter macro

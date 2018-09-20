@@ -51,7 +51,6 @@ uint8_t YogiGen_insert_into_db(YogiGen *yogen, Generated *gen)
     bstring query = bfromcstr(template);
     do {
         ssize_t rnd_ret = getrandom(&gen->rnd_id, sizeof(uint64_t), 0);
-        printf("%lx\n", gen->rnd_id);
         check(rnd_ret != -1, "Failed to source random bytes.");
         bassignformat(query, template, gen->rnd_id, bdata(gen->str));
         while (yogen->conn->conn_count == yogen->conn->max_conn) {
@@ -70,10 +69,8 @@ error:
 bstring YogiGen_get_by_id(YogiGen *yogen, bstring id_str)
 {
     const char *template = GENS_SQL_SELECT_TEMPLATE;
-    printf("string received was: %s\n", bdata(id_str));
     bstring query = bfromcstr(template);
     bassignformat(query, template, (bdata(id_str)));
-    printf("%s\n", bdata(query));
     while (yogen->conn->conn_count == yogen->conn->max_conn) {
         sleep(1);
     }

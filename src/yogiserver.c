@@ -119,7 +119,6 @@ int gen_request_handler(struct mg_connection *conn, void *cbdata)
     check(gen_str, YOGISERVER_GEN_ERROR, "to generate requested string.");
     bstring gen_str_enc = bstrcpy(gen_str);
     encode_form_uri(gen_str_enc);
-    printf("%s\n", bdata(gen_str_enc));
 	uint8_t rnd = randomize_button_text_idx(server);
 	long long content_len = (long long) (
 		blength(server->html_template_gen)
