@@ -1,0 +1,117 @@
+Yogi Tea Phrases
+
+1. "People who love are happy."
+2. "Walk beautifully, talk beautifully, live beautifully."
+3. "Love is the fountain of compassion."
+4. "People who love are compassionate."
+5. "Never try to impress others, try to impress yourself."
+6. "Prosperity is within us."
+7. "Love is an experience of infinity."
+8. "Give love, get love."
+9. "Compassion will make you beautiful."
+10. "Peace of mind comes piece by piece."
+11. "Compassion has no limit. Kindness has no enemy."
+12. "An attitude of gratitude brings opportunities."
+13. "Practice compassion, forgiveness and kindness."
+14. "Happiness comes from contentment."
+15. "Your strength is your own knowledge."
+16. "Have wisdom in your actions and faith in your merits."
+17. "Joy is the essence of success."
+18. "I am beautiful, I am bountiful, I am blissful."
+19. "Let things come to you."
+20. "Where there is love, there is no question."
+21. "Let you heart speak to others' hearts."
+22. "Soul is the highest self."
+
+23. What belongs to you shall come to you.
+    What <v01pp> to you shall <v11upp> to you.
+24. Your greatness is not what you have, it's what you give.
+    Your <c00> is not what you <v00>, it's what you <v10u>.
+25. Be proud of who you are.
+--
+26. Your intuition is your best friend.
+    Your <c00> is your best <o00>.
+27. Sing from your heart.
+    <v00> from your <o00>.
+28. The art of happiness is to serve all.
+    The art of <c00> is to <v00> all.
+29. Life is a gift. Experience is the beauty.
+    <c00> is a <o00idef>. <o10u> is the <c10def>.
+30. There is no love without compassion.
+    There is no <c00> without <x10u>.
+31. Love has no fear and no vengeance.
+    <c00> has no <c10u> and no <c20u>.
+32. Appreciate yourself and honor your soul.
+    <v00> yourself and <v10> your <o00>.
+33. To be calm is the highest achievement of the self.
+    To be <a00> is the highest <o00> of <c01>.
+34. May this day bring you peace, tranquility and harmony.
+    May this <o00> bring you <c00>, <c10u>, and <c20u>.
+35. Truth is everlasting.
+    <c00> is <a00>.
+36. Compassion creates understanding.
+    <c00> creates <c11>.
+37. Grace brings love and prosperity.
+    <c01> brings <c10u> and <c20u>.
+38. Love is a source of bliss and infinity.
+    <c01> is a <o00idef> of <c10u> and <c20u>.
+39. Love is an infinite victory.
+40. Love is an elevated self.
+42. Love is an infinite power.
+    <c00> is an <a00idef> <o00>.
+41. Your greatest strength is love.
+    Your greatest <c00> is <c11u>.
+43. Life without love is a ship without sails.
+44. Love without trust is a river without water.
+    <c00> without <c10u> is a <o00idef> without <o11u>.
+45. Self-reliance is the greatest art.
+    <c00> is the greatest <c10u>.
+46. Recognise that you are the truth.
+    <v00> that you are <c01>.
+47. Our head bows and our heart is filled with love and joy.
+    Our <o00> <v01> and our <o10u> is <a00> with <c00> and <c10u>.
+48. Let your heart guide you.
+    Let your <o00> guide you.
+49. You will always live happy if you live with your heart.
+    You will always live <a01> if you live with your <o00>.
+50. Life is a flow of love; your participation is requested.
+    <c00> is a <o00idef> of <c10u>; your <c20u> is requested.
+51. Experience will give you wisdom.
+    <c00> will give you <c10u>.
+52. Love, compassion and kindness are the anchors of life.
+    <c00>, <c10u> and <c20u> are the <o01> of <c30u>
+53. Life is a chance. Love is infinity. Grace is reality.
+    Life is a <o00idef>. Love is <c01>. Grace is <c11u>.
+54. Empty yourself and let the universe fill you.
+    <v00> yourself and let <c01> fill you.
+55. <v00> to <v10>.
+56. The <o00> of your <c00> is <c20u>.
+57. <c00> is <a00>.
+58. Say it <a00>, <a10u> and with a <o00>.
+59. Speak the truth.
+    <v00> <c01>.
+60. Live in your strength.
+    <v00> in your <c00>.
+
+1. "People who /verb/ are /adjective/."
+2. "Walk /adverb/, talk /adverb/, live /adverb/."
+3. "/concept/ is the /object/ of /concept/."
+4. "Never /verb1/ to /verb2/ others, /verb1/ to /verb2/ yourself."
+5. "/Concept/ is within us."
+6. "/Concept/ is an experience of /concept|object/."
+7. "Give /concept/, get /concept/."
+8. "/Concept/ will make you /adjective/."
+9. "/Concept/ comes /object*/ by /object*/".
+10. "/Concept1/ has no /concept2/. /Concept3/ has no /Concept4/."
+11. "An attitude of /concept/ bring /object/s."
+12. "/Verb/ /concept1/, /concept2/ and /concept3/."
+13. "/Concept1/ comes from /concept2/."
+14. "/Concept/ comes from /object/|s."
+15. "Your /concept1/ is your own /concept2/."
+16. "Have /concept1/ in your /object1/|s and /concept2/ in your /object2/|s."
+17. "/Concept1/ is the /concept2/ of /concept3/."
+18. "I am /adjective1/, /adjective2/, /adjective3/."
+19. "Let /object/s|/concept/ come to you."
+20. "Where there is /concept/, there is no /object/."
+21. "Let your /object/ speak to others' /object/s."
+22. "/Concept1/ is the highest /concept2/."

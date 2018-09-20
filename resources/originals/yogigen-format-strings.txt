@@ -1,0 +1,113 @@
+People who %s are %s.
+0x22
+Walk %s, talk %s, live %s.
+0x432303
+%s is the %s of %s.
+0x4C2604
+Never %s to %s others, %s to %s yourself.
+0x68402800
+%s is within us.
+0x4
+%s is an experience of %s.
+0x2C04
+Give %s, get %s.
+0x2404
+%s will make you %s.
+0x2404
+%s comes %s by %s.
+0x462604
+%s has no %s. %s has no %s.
+0x7C542C04
+An attitude of %s brings %s.
+0x2704
+%s %s, %s and %s.
+0x744C2400
+%s comes from %s.
+0x2C04
+%s comes from %s.
+0x2704
+Your %s is your own %s.
+0x2C04
+Have %s in your %s and %s in your %s.
+0x6F4C2704
+%s is the %s of %s.
+0x542C04
+I am %s, I am %s, I am %s.
+0x522A02
+Let %s come to you.
+0x7
+Let %s come to you.
+0x4
+Where there is %s, there is no %s.
+0x2604
+Where there is %s, there is no %s.
+0x2C04
+Let your %s speak to others\' %s.
+0x2706
+%s is the highest %s.
+0x2C04
+-----
+Your %s is not what you %s, it's what you %s.
+0x280004
+Your %s is your best %s.
+0x604
+%s from your %s.
+0x600
+The art of %s is to %s all.
+0x4
+%s is a %s. %s is the %s.
+0xCC2EA604
+There is no %s without %s.
+0x2C04
+%s has no %s and no %s.
+0x342C04
+%s yourself and %s your %s.
+0x60800
+To be %s is the highest %s of %s.
+0x50602
+May this %s bring you %s, %s and %s.
+0x342C0406
+%s is %s.
+0x204
+%s creates %s.
+0xD04
+%s brings %s and %s.
+0x342C04
+%s is a %s of %s and %s.
+0x342CA605
+%s is an %s %s.
+0x6A204
+Your greatest %s is %s.
+0x2D04
+%s without %s is a %s without %s.
+0x2FA62C04
+%s is the greatest %s.
+0x2C04
+%s that you are %s.
+0x500
+Our %s %s and our %s is %s with %s and %s.
+0x2C04022E0106
+Let your %s guide you.
+0x6
+You will always live %s if you live with your %s.
+0x602
+%s is a %s of %s; your %s is requested.
+0x342CA604
+%s will give you %s.
+0x2C04
+%s, %s and %s are the %s of %s.
+0x3C07342C04
+Life is a %s. Love is %s. Grace is %s.
+0x2D05A7
+%s yourself and let %s fill you.
+0x500
+%s to %s.
+0x800
+The %s of your %s is %s.
+0x2C0406
+%s is %s.
+0x204
+%s %s.
+0x500
+%s in your %s.
+0x400

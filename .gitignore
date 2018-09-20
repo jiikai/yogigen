@@ -1,0 +1,7 @@
+.cnf
+.env
+.gch
+.htmlhintrc
+/ref
+/depr
+/resources/original/

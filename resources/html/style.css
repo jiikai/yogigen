@@ -1,0 +1,103 @@
+@charset "utf-8";
+
+@font-face {
+    font-family: tfarrow;
+    font-style:normal;
+    font-weight:400;
+    src:url('../fonts/TFArrow-Bold.eot'); /* IE9 Compat Modes */
+    src:url('../fonts/TFArrow-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('../fonts/TFArrow-Bold.woff2') format('woff2'), /* Modern browsers */
+        url('../fonts/TFArrow-Bold.woff') format('woff'),
+        url('../fonts/TFArrow-Bold.ttf') format('truetype');
+}
+
+@keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+@-moz-keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+@-webkit-keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+
+body {
+    background-color: #8B3A3A;
+    color: #FEF1E1;
+    font-family:inherit;
+    margin: 0;
+    padding: 0
+}
+
+#wrapper {
+    align-items: center;
+    display: flex;
+    height: 150px;
+    justify-content: center;
+    width: 100%
+}
+
+#wrapper2 {
+    align-items: center;
+    display: flex;
+    height: 450px;
+    justify-content: center;
+    width: 100%
+}
+
+.button {
+    background-color: #8B3A3A;
+    color: #FEF1E1;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 2vw;
+    font-style: normal;
+    font-weight: lighter;
+    height: 120px;
+    width: 700px
+}
+
+.button:hover {
+    background-color: #995757;
+}
+
+.button2 {
+    background-color: #8B3A3A;
+    color: #FEF1E1;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1.75vw;
+    font-style: italic;
+    font-weight: lighter;
+    height: 60px;
+    width: 432px
+}
+
+.button2:hover {
+    background-color: #995757;
+}
+
+.container {
+    font-size: 5vw;
+    position: relative;
+    text-align: center;
+    top: 70px
+}
+
+.fade-in {
+    animation: fadeIn ease-in 1;
+    -moz-animation: fadeIn ease-in 1;
+    -webkit-animation: fadeIn ease-in 1;
+    animation-duration: 1s;
+    -moz-animation-duration: 1s;
+    -webkit-animation-duration: 1s;
+    animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+    opacity: 0;
+}

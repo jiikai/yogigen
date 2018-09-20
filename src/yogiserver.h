@@ -1,0 +1,154 @@
+#ifndef __yogiserver_h__
+#define __yogiserver_h__
+
+/* Server functionality for YogiGen. */
+
+#define _XOPEN_SOURCE 700
+#ifdef _WIN32
+#include <windows.h>
+#define sleeper(x) Sleep(x * 1000)
+#else
+#include <unistd.h>
+#define sleeper(x) sleep(x)
+#endif
+#include <signal.h>
+/* link with -lrt */
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <ctype.h>
+#include <pthread.h>
+#include <sys/random.h>
+#include "./dependencies/civetweb.h"
+#include "./dependencies/bstrlib.h"
+#include "dbg.h"
+#include "yogigen.h"
+#include "yogiexpr.h"
+
+// Options for the CivetWeb server
+#define DOCUMENT_ROOT "../resources/html"
+#ifdef HEROKU
+    #define PORT ((char*) getenv("PORT"))
+    #define HOST "yogigen.herokuapp.com"
+#else
+    #define PORT "8080"
+    #define HOST "joa-p702"
+#endif
+#define REQUEST_TIMEOUT "10000"
+#define ERR_LOG "../log/server.log"
+#ifdef USE_WEBSOCKET
+    #define WSOCK_TIMEOUT "3600000"
+#endif
+#ifdef USE_SSL
+    #define HTTP_PREFIX "https://"
+    #include "openssl/ssl.h"
+    #define SSL_CERT "../resources/cert/server.pem"
+    #define SSL_VER "4"
+    #ifdef USE_SSL_DH
+        #include "openssl/dh.h"
+        #include "openssl/ec.h"
+        #include "openssl/evp.h"
+        #include "openssl/ecdsa.h"
+        #define SSL_CIPHER "ECDHE-RSA-AES256-GCM-SHA384:DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256"
+    #else
+        #define SSL_CIPHER "DES-CBC3-SHA:AES128-SHA:AES128-GCM-SHA256"
+    #endif
+/*
+* Copyright (c) 2013-2017 the CivetWeb developers
+* Copyright (c) 2013 No Face Press, LLC
+* License http://opensource.org/licenses/mit-license.php MIT License
+*/
+    int init_ssl(void *ssl_context, void *user_data)
+    {
+    	/* Add application specific SSL initialization */
+    	struct ssl_ctx_st *ctx = (struct ssl_ctx_st *)ssl_context;
+
+    #ifdef USE_SSL_DH
+    	/* example from https://github.com/civetweb/civetweb/issues/347 */
+    	DH *dh = get_dh2236();
+    	if (!dh)
+    		return -1;
+    	if (1 != SSL_CTX_set_tmp_dh(ctx, dh))
+    		return -1;
+    	DH_free(dh);
+
+    	EC_KEY *ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
+    	if (!ecdh)
+    		return -1;
+    	if (1 != SSL_CTX_set_tmp_ecdh(ctx, ecdh))
+    		return -1;
+    	EC_KEY_free(ecdh);
+
+    	printf("ECDH ciphers initialized\n");
+    #endif
+    	return 0;
+    }
+/* END COPYRIGHT */
+#else
+    #define HTTP_PREFIX "http://"
+#endif
+#define AUTH_DOM_CHECK "no"
+
+// Valid relative URIs
+#define FRNTPG_URI "/"
+#define GEN_URI "/gen"
+#define PERMALINK_URI "/permalink"
+#define GETBYID_URI "/getbyid"
+#define EXIT_URI "/exit"
+
+// id in /getbyid is a 64-byte hash
+#define HASHLEN 64
+
+// HTML template paths
+#define YOGIGEN_HTML "../resources/html/yogigen.html"
+#define YOGIGEN_PERMALINK_HTML "../resources/html/yogigen_permalink.html"
+#define YOGIGEN_GETBYID_HTML "../resources/html/yogigen_getbyid.html"
+
+// HTTP response headers currently used
+#define HTTP_RES_200 "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\n"
+#define HTTP_RES_405 "HTTP/1.1 405 Method Not Allowed\r\nAllow: GET\r\nConnection: close\r\n\r\n"
+#define HTTP_RES_500 "HTTP/1.1 500 Internal Server Error\r\nConnection: close\r\n\r\n"
+
+// HTML Button text variations
+#define BTN_TXT_0 "Generate"
+#define BTN_TXT_1 "Chakras align"
+#define BTN_TXT_2 "Feel the wisdom"
+#define BTN_TXT_3 "Enlightenment is only a click away"
+#define BTN_TXT_COUNT 4
+#define BTN_TXT_DEFAULT 3
+
+// Error messages
+#define YOGISERVER_STARTUP_FAILED "Server failed %s." // to start, fetching ports, ...
+#define YOGISERVER_405_NOT_ALLOWED "Method %s not allowed." // [HTTP method]
+#define YOGISERVER_DB_ERROR "Error in %s database." // inserting to, selecting from
+#define YOGISERVER_GEN_ERROR "YogiGen failed %s." // to generate
+/*#define YOGISERVER_ERRMSG_5
+#define YOGISERVER_ERRMSG_6*/
+#define YOGISERVER_FILE_ERR "Failed %s file %s" // [fileop] [path]
+
+// Port protocol getter macro
+#define get_protocol(server,i) server->ports[i].is_ssl ? "https" : "http"
+
+// Server wrapper struct
+typedef struct yogiserver {
+    struct mg_context *ctx;
+    struct mg_callbacks callbacks;
+    struct mg_server_ports ports[32];
+    int8_t ports_count;
+    struct sigaction sigactor;
+    YogiGen *yogen;
+    bstring sys_info;
+    bstring html_template;
+    bstring html_template_permalink;
+    bstring html_template_getbyid;
+    const char *btn_txts[BTN_TXT_COUNT];
+} YogiServer;
+
+// Public access functions
+YogiServer* YogiServer_init();
+void YogiServer_close(YogiServer *server);
+
+#endif
