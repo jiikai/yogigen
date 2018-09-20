@@ -42,7 +42,4 @@ int postgres_select_cycle(PGconn *db, char* query, handle_result function, void 
 PGresult *postgres_select_concurrent(Connection *conn, char* query);
 int postgres_insert_concurrent(Connection *conn, char* query);
 
-
-
-
 #endif

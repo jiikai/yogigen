@@ -44,51 +44,6 @@ static void read_expr_result_set(void *arg, PGresult *res_set)
     }
 }
 
-uint8_t YogiGen_insert_into_db(YogiGen *yogen, Generated *gen)
-{
-    int ret;
-    const char *template = GENS_SQL_INSERT_TEMPLATE;
-    bstring query = bfromcstr(template);
-    do {
-        ssize_t rnd_ret = getrandom(&gen->rnd_id, sizeof(uint64_t), 0);
-        check(rnd_ret != -1, "Failed to source random bytes.");
-        bassignformat(query, template, gen->rnd_id, bdata(gen->str));
-        while (yogen->conn->conn_count == yogen->conn->max_conn) {
-            sleep(1);
-        }
-        ret = postgres_insert_concurrent(yogen->conn, bdata(query));
-        check(ret != 0, "Insert was not succesful.");
-    } while (ret == -1); // indicating uniqueness violation, need to roll a new id
-    bdestroy(query);
-    return 1;
-error:
-    if (query) bdestroy(query);
-    return 0;
-}
-
-bstring YogiGen_get_by_id(YogiGen *yogen, bstring id_str)
-{
-    const char *template = GENS_SQL_SELECT_TEMPLATE;
-    bstring query = bfromcstr(template);
-    bassignformat(query, template, (bdata(id_str)));
-    while (yogen->conn->conn_count == yogen->conn->max_conn) {
-        sleep(1);
-    }
-    PGresult *res = postgres_select_concurrent(yogen->conn, bdata(query));
-    bdestroy(query);
-    check(res, "Error obtaining result set from db.");
-    if (!PQntuples(res)) {
-        log_warn("No rows matching id, returning original input string %s.", id_str->data);
-        PQclear(res);
-        return id_str;
-    }
-    bstring ret_str = bfromcstr(PQgetvalue(res, 0, 0));
-    PQclear(res);
-    return ret_str;
-error:
-    if (query) bdestroy(query);
-    return NULL;
-}
 
 static uint8_t fetch_counts(YogiGen *yogen)
 {
@@ -139,100 +94,6 @@ error:
     return 0;
 }
 
-YogiGen *YogiGen_init()
-{
-    YogiGen *yogen = malloc(sizeof(YogiGen));
-    check_mem(yogen);
-
-    yogen->conn = open_conn();
-    check(yogen->conn, "Failed to establish db connection.");
-
-    int8_t ret = fetch_counts(yogen);
-    check(ret, "Failed to fetch table row counts from database.");
-
-    Format_String *formats = malloc(sizeof(Format_String) * yogen->formats_count);
-    check_mem(formats);
-    yogen->formats = formats;
-
-    Expression *verbs = malloc(sizeof(Expression) * yogen->verb_count);
-    check_mem(verbs);
-    yogen->verbs = verbs;
-
-    Expression *adjs = malloc(sizeof(Expression) * yogen->adj_count);
-    check_mem(adjs);
-    yogen->adjs = adjs;
-
-    Expression *cepts = malloc(sizeof(Expression) * yogen->cept_count);
-    check_mem(cepts);
-    yogen->cepts = cepts;
-
-    Expression *objs = malloc(sizeof(Expression) * yogen->obj_count);
-    check_mem(objs);
-    yogen->objs = objs;
-
-    return yogen;
-
-error:
-    if (yogen) YogiGen_close(yogen);
-    return NULL;
-}
-
-void YogiGen_close(YogiGen *yogen)
-{
-    if (yogen) {
-        if (yogen->conn) {
-            close_conn(yogen->conn);
-        }
-        if (yogen->formats) {
-            for (size_t i = 0; i < yogen->formats_count; i++) {
-                bdestroy(yogen->formats[i].str);
-            }
-            free(yogen->formats);
-        }
-        if (yogen->verbs) {
-            for (size_t i = 0; i < yogen->verb_count; i++) {
-                bdestroy(yogen->verbs[i].field_1);
-                bdestroy(yogen->verbs[i].field_2);
-            }
-            free(yogen->verbs);
-        }
-        if (yogen->adjs) {
-            for (size_t i = 0; i < yogen->adj_count; i++) {
-                bdestroy(yogen->adjs[i].field_1);
-                bdestroy(yogen->adjs[i].field_2);
-            }
-            free(yogen->adjs);
-        }
-        if (yogen->cepts) {
-            for (size_t i = 0; i < yogen->cept_count; i++) {
-                bdestroy(yogen->cepts[i].field_1);
-                bdestroy(yogen->cepts[i].field_2);
-
-            }
-            free(yogen->cepts);
-        }
-        if (yogen->objs) {
-            for (size_t i = 0; i < yogen->obj_count; i++) {
-                bdestroy(yogen->objs[i].field_1);
-                bdestroy(yogen->objs[i].field_2);
-            }
-            free(yogen->objs);
-        }
-        free(yogen);
-    }
-}
-
-uint8_t YogiGen_fetch_all(YogiGen *yogen)
-{
-    uint8_t ret;
-    ret = fetch_expressions(yogen);
-    check(ret, "Failed to fetch expressions from database.");
-    ret = fetch_formats(yogen);
-    check(ret, "Failed to fetch format strings from database.");
-    return 1;
-error:
-    return 0;
-}
 
 static Format_String *get_formats(YogiGen *yogen, uint16_t id)
 {
@@ -371,13 +232,6 @@ error:
     return NULL;
 }
 
-static void s_data_destroy(Substitution_Data *s_data)
-{
-    if (s_data) {
-        free(s_data);
-    }
-}
-
 static Substitution_Data *process_formats(YogiGen *yogen, Format_String *fstr)
 {
     uint64_t data = fstr->data;
@@ -472,11 +326,107 @@ static bstring prettify(YogiGen *yogen, Substitution_Data *s_data)
         }
         dot_pos = bstrrchrp(out, '.', dot_pos - 1);
     }
-    s_data_destroy(s_data);
+    free(s_data);
     printf("%s\n", out->data);
     return out;
 error:
+    if (s_data) free(s_data);
     return NULL;
+}
+
+YogiGen *YogiGen_init()
+{
+    YogiGen *yogen = malloc(sizeof(YogiGen));
+    check_mem(yogen);
+
+    yogen->conn = open_conn();
+    check(yogen->conn, "Failed to establish db connection.");
+
+    int8_t ret = fetch_counts(yogen);
+    check(ret, "Failed to fetch table row counts from database.");
+
+    Format_String *formats = malloc(sizeof(Format_String) * yogen->formats_count);
+    check_mem(formats);
+    yogen->formats = formats;
+
+    Expression *verbs = malloc(sizeof(Expression) * yogen->verb_count);
+    check_mem(verbs);
+    yogen->verbs = verbs;
+
+    Expression *adjs = malloc(sizeof(Expression) * yogen->adj_count);
+    check_mem(adjs);
+    yogen->adjs = adjs;
+
+    Expression *cepts = malloc(sizeof(Expression) * yogen->cept_count);
+    check_mem(cepts);
+    yogen->cepts = cepts;
+
+    Expression *objs = malloc(sizeof(Expression) * yogen->obj_count);
+    check_mem(objs);
+    yogen->objs = objs;
+
+    return yogen;
+
+error:
+    if (yogen) YogiGen_close(yogen);
+    return NULL;
+}
+
+void YogiGen_close(YogiGen *yogen)
+{
+    if (yogen) {
+        if (yogen->conn) {
+            close_conn(yogen->conn);
+        }
+        if (yogen->formats) {
+            for (size_t i = 0; i < yogen->formats_count; i++) {
+                bdestroy(yogen->formats[i].str);
+            }
+            free(yogen->formats);
+        }
+        if (yogen->verbs) {
+            for (size_t i = 0; i < yogen->verb_count; i++) {
+                bdestroy(yogen->verbs[i].field_1);
+                bdestroy(yogen->verbs[i].field_2);
+            }
+            free(yogen->verbs);
+        }
+        if (yogen->adjs) {
+            for (size_t i = 0; i < yogen->adj_count; i++) {
+                bdestroy(yogen->adjs[i].field_1);
+                bdestroy(yogen->adjs[i].field_2);
+            }
+            free(yogen->adjs);
+        }
+        if (yogen->cepts) {
+            for (size_t i = 0; i < yogen->cept_count; i++) {
+                bdestroy(yogen->cepts[i].field_1);
+                bdestroy(yogen->cepts[i].field_2);
+
+            }
+            free(yogen->cepts);
+        }
+        if (yogen->objs) {
+            for (size_t i = 0; i < yogen->obj_count; i++) {
+                bdestroy(yogen->objs[i].field_1);
+                bdestroy(yogen->objs[i].field_2);
+            }
+            free(yogen->objs);
+        }
+        free(yogen);
+    }
+}
+
+uint8_t YogiGen_fetch_all(YogiGen *yogen)
+{
+    uint8_t ret;
+    ret = fetch_expressions(yogen);
+    check(ret, "Failed to fetch expressions from database.");
+    ret = fetch_formats(yogen);
+    check(ret, "Failed to fetch format strings from database.");
+    return 1;
+error:
+    return 0;
 }
 
 bstring YogiGen_generate(YogiGen *yogen)
@@ -489,5 +439,51 @@ bstring YogiGen_generate(YogiGen *yogen)
     return out;
 error:
     YogiGen_close(yogen);
+    return NULL;
+}
+
+uint8_t YogiGen_insert_into_db(YogiGen *yogen, Generated *gen)
+{
+    int ret;
+    const char *template = GENS_SQL_INSERT_TEMPLATE;
+    bstring query = bfromcstr(template);
+    do {
+        ssize_t rnd_ret = getrandom(&gen->rnd_id, sizeof(uint64_t), 0);
+        check(rnd_ret != -1, "Failed to source random bytes.");
+        bassignformat(query, template, gen->rnd_id, bdata(gen->str));
+        while (yogen->conn->conn_count == yogen->conn->max_conn) {
+            sleep(1);
+        }
+        ret = postgres_insert_concurrent(yogen->conn, bdata(query));
+        check(ret != 0, "Insert was not succesful.");
+    } while (ret == -1); // -1 indicates a uniqueness violation, need to roll a new id
+    bdestroy(query);
+    return 1;
+error:
+    if (query) bdestroy(query);
+    return 0;
+}
+
+bstring YogiGen_get_by_id(YogiGen *yogen, bstring id_str)
+{
+    const char *template = GENS_SQL_SELECT_TEMPLATE;
+    bstring query = bfromcstr(template);
+    bassignformat(query, template, (bdata(id_str)));
+    while (yogen->conn->conn_count == yogen->conn->max_conn) {
+        sleep(1);
+    }
+    PGresult *res = postgres_select_concurrent(yogen->conn, bdata(query));
+    bdestroy(query);
+    check(res, "Error obtaining result set from db.");
+    if (!PQntuples(res)) {
+        log_warn("No rows matching id, returning original input string %s.", id_str->data);
+        PQclear(res);
+        return id_str;
+    }
+    bstring ret_str = bfromcstr(PQgetvalue(res, 0, 0));
+    PQclear(res);
+    return ret_str;
+error:
+    if (query) bdestroy(query);
     return NULL;
 }

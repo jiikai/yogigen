@@ -400,7 +400,7 @@ void YogiServer_close(YogiServer *server)
     mg_exit_library();
 }
 
-int main(int argc, char const *argv[])
+int main()
 {
     terminate = 0;
     YogiServer *server;

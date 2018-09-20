@@ -1,18 +1,6 @@
 #include "yogidb.h"
 #include "dbg.h"
 
-int postgres_select_cycle(PGconn *db, char* query, handle_result res_function, void *arg)
-{
-    PGresult *res = PQexec(db, query);
-    check(PQresultStatus(res) != PGRES_FATAL_ERROR, "Postgres: %s",  PQerrorMessage(db));
-    res_function(arg, res);
-    PQclear(res);
-    return 1;
-error:
-    if (res) PQclear(res);
-    return 0;
-}
-
 static PGconn *pg_open_nonblocking_conn(Connection *conn)
 {
     PGconn *db;
@@ -45,6 +33,18 @@ error:
         conn->conn_count--;
     }
     return NULL;
+}
+
+int postgres_select_cycle(PGconn *db, char* query, handle_result res_function, void *arg)
+{
+    PGresult *res = PQexec(db, query);
+    check(PQresultStatus(res) != PGRES_FATAL_ERROR, "Postgres: %s",  PQerrorMessage(db));
+    res_function(arg, res);
+    PQclear(res);
+    return 1;
+error:
+    if (res) PQclear(res);
+    return 0;
 }
 
 PGresult *postgres_select_concurrent(Connection *conn, char* query)
