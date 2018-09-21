@@ -151,6 +151,7 @@ INSERT INTO Format_String (str, data, count) VALUES ('%s has no %s and no %s.', 
 INSERT INTO Format_String (str, data, count) VALUES ('%s yourself and %s your %s.', X'60800'::bigint, 3);
 INSERT INTO Format_String (str, data, count) VALUES ('To be %s is the highest %s of %s.', X'50602'::bigint, 3);
 INSERT INTO Format_String (str, data, count) VALUES ('May this %s bring you %s, %s and %s.', X'352C0406'::bigint, 4);
+
 INSERT INTO Format_String (str, data, count) VALUES ('%s is %s.', X'204'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s creates %s.', X'D04'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s brings %s and %s.', X'342C04'::bigint, 3);

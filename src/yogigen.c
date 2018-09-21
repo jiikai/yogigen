@@ -302,12 +302,13 @@ static bstring prettify(YogiGen *yogen, Substitution_Data *s_data)
         int pos = bstrchr(out, '%');
         // handle possibly nonmatching indef article if the corresponding flag is present
         if (s_data->flags[i] == FSTR_INDEF_ART) {
-            int an_pos = bstrrchrp(out, 'n', pos);
-            an_pos = (pos - an_pos);
-            if (an_pos != 2 && expr->flags == A_OFLAG_AN) {
-                binsertch(out, pos - 1, 1, 'n');
-            } else if (an_pos == 2 && expr->flags != A_OFLAG_AN) {
-                bdelete(out, pos - 2, 1);
+            char a_or_n = bchar(out, pos - 2);
+            if (a_or_n == 'a' && s_data->flags[i] == A_OFLAG_AN) {
+                bstring fill = bfromcstr("n ");
+                binsert(insert, pos - 1, fill, ' ');
+                bdestroy(fill);
+            } else if (a_or_n == 'n' && s_data->flags[i] == EXPR_NO_FLAGS) {
+                bdelete(insert, pos - 2, 1);
             }
         }
         bdelete(out, pos, 2);
