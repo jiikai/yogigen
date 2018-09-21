@@ -156,7 +156,7 @@ INSERT INTO Format_String (str, data, count) VALUES ('%s is %s.', X'204'::bigint
 INSERT INTO Format_String (str, data, count) VALUES ('%s creates %s.', X'D04'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s brings %s and %s.', X'342C04'::bigint, 3);
 INSERT INTO Format_String (str, data, count) VALUES ('%s is a %s of %s and %s.', X'342CA605'::bigint, 4);
-INSERT INTO Format_String (str, data, count) VALUES ('%s is an %s %s.', X'6A204'::bigint, 3);
+INSERT INTO Format_String (str, data, count) VALUES ('%s is a %s %s.', X'6A204'::bigint, 3);
 INSERT INTO Format_String (str, data, count) VALUES ('Your greatest %s is %s.', X'2D04'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s without %s is a %s without %s.', X'2FA62C04'::bigint, 4);
 INSERT INTO Format_String (str, data, count) VALUES ('%s is the greatest %s.', X'2C04'::bigint, 2);

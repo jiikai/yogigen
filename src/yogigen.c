@@ -290,7 +290,7 @@ error:
     return NULL;
 }
 
-static bstring prettify(YogiGen *yogen, Substitution_Data *s_data)
+static bstring substitute_and_prettify(YogiGen *yogen, Substitution_Data *s_data)
 {
     int i = 0;
     Expression *expr;
@@ -300,16 +300,11 @@ static bstring prettify(YogiGen *yogen, Substitution_Data *s_data)
         check(expr, "Error assigning an expression (id=%d) to template. (%s)", s_data->ins[i], s_data->str->data);
         bstring insert = s_data->modes[i] == 0 ? expr->field_1 : expr->field_2;
         int pos = bstrchr(out, '%');
-        // handle possibly nonmatching indef article if the corresponding flag is present
-        if (s_data->flags[i] == FSTR_INDEF_ART) {
-            char a_or_n = bchar(out, pos - 2);
-            if (a_or_n == 'a' && s_data->flags[i] == A_OFLAG_AN) {
-                bstring fill = bfromcstr("n ");
-                binsert(insert, pos - 1, fill, ' ');
-                bdestroy(fill);
-            } else if (a_or_n == 'n' && s_data->flags[i] == EXPR_NO_FLAGS) {
-                bdelete(insert, pos - 2, 1);
-            }
+        // check for and hanbdle possibly nonmatching indef article if the corresponding FSTR flag is present
+        if (s_data->flags[i] == FSTR_INDEF_ART && expr->flags == A_OFLAG_AN) {
+            bstring fill = bfromcstr("n ");
+            binsert(insert, pos - 1, fill, ' ');
+            bdestroy(fill);
         }
         bdelete(out, pos, 2);
         binsert(out, pos, insert, ' ');
