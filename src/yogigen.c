@@ -445,7 +445,7 @@ error:
 uint64_t YogiGen_insert_into_db(YogiGen *yogen, bstring gen_str)
 {
     int ret;
-    const char *template = GENS_SQL_INSERT_TEMPLATE;
+    const char *template = GEN_SQL_INSERT_TEMPLATE;
     bstring query = bfromcstr(template);
     uint64_t rnd_id = 0;
     do {
@@ -471,7 +471,7 @@ error:
 
 bstring YogiGen_get_by_id(YogiGen *yogen, bstring id_str)
 {
-    const char *template = GENS_SQL_SELECT_TEMPLATE;
+    const char *template = GEN_SQL_UPDATE_RETURN_TEMPLATE;
     bstring query = bfromcstr(template);
     bassignformat(query, template, (bdata(id_str)));
     while (yogen->conn->conn_count == yogen->conn->max_conn) {

@@ -16,6 +16,7 @@ CREATE TABLE Format_String (
 CREATE TABLE Generated (
     id bigint PRIMARY KEY,
     insertion_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_access timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     phrase text
 );
 

@@ -18,9 +18,9 @@
 
 #define FRMT_SQL_SELECT_TEMPLATE "SELECT id as id, str AS str, data AS data, count AS count FROM Format_String;"
 
-#define GENS_SQL_INSERT_TEMPLATE "INSERT INTO Generated (id, phrase) VALUES (X'%lx'::bigint, '%s');"
+#define GEN_SQL_INSERT_TEMPLATE "INSERT INTO Generated (id, phrase) VALUES (X'%lx'::bigint, '%s');"
 
-#define GENS_SQL_SELECT_TEMPLATE "SELECT phrase FROM Generated WHERE id=X'%s'::bigint;"
+#define GEN_SQL_UPDATE_RETURN_TEMPLATE "UPDATE Generated SET last_access=CURRENT_TIMESTAMP WHERE id=X'%s'::bigint RETURNING phrase;"
 
 #define SQL_EXPR_COUNT_PG "SELECT count(*) FILTER (WHERE type=0) AS verb_count, count(*) FILTER (WHERE type=1) AS a_count, count(*) FILTER (WHERE type=2) AS c_count, count(*) FILTER (WHERE type=3) AS o_count FROM Expression;"
 
