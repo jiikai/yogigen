@@ -91,11 +91,7 @@ int frontpage_request_handler(struct mg_connection *conn, void *cbdata)
     check(!ret, YOGISERVER_405_NOT_ALLOWED, req_info->request_method);
 	YogiServer *server = (YogiServer*) cbdata;
     uint8_t rnd = randomize_button_text_idx(server);
-	long long content_len = (long long) (
-		blength(server->html_template_index)
-		 - 2 + sizeof(server->btn_txts[rnd]) // replace %s with a string
-	);
-	mg_send_http_ok(conn, "text/html", content_len);
+	mg_printf(conn, HTTP_RES_200);
     mg_printf(conn, bdata(server->html_template_index), server->btn_txts[rnd]);
     return 200;
 error:
@@ -117,16 +113,14 @@ int gen_request_handler(struct mg_connection *conn, void *cbdata)
     bstring gen_str = YogiGen_generate(server->yogen);
     check(gen_str, YOGISERVER_GEN_ERROR, "to generate requested string.");
     bstring gen_str_enc = bstrcpy(gen_str);
-    encode_form_uri(gen_str_enc);
+	// Modify literal apostrophes to the corresponding HTML entity.
+	bstring find = bfromcstr("'");
+	bstring replace = bfromcstr("&#8217");
+	bfindreplace(gen_str_enc, find, replace, 0);
+	bdestroy(find);
+	bdestroy(replace);
 	uint8_t rnd = randomize_button_text_idx(server);
-	long long content_len = (long long) (
-		blength(server->html_template_gen)
-		 - (2*3) // printf style format string placeholders
-		+ sizeof(server->btn_txts[rnd]) // and their replacements
-		+ sizeof(bdata(gen_str))
-		+ sizeof(bdata(gen_str))
-	);
-	mg_send_http_ok(conn, "text/html", content_len);
+	mg_printf(conn, HTTP_RES_200);
     mg_printf(conn, bdata(server->html_template_gen), server->btn_txts[rnd], bdata(gen_str), bdata(gen_str_enc));
     bdestroy(gen_str);
     bdestroy(gen_str_enc);
@@ -150,12 +144,12 @@ int permalink_request_handler(struct mg_connection *conn, void *cbdata)
     int pos = bstrchr(query, '=');
     bdelete(query, 0, pos + 1);
     bstring query_dec = bstrcpy(query);
-    mg_url_decode(bdata(query), query->slen, bdata(query_dec), query_dec->slen, 0);
-    decode_form_uri(query_dec);
+	balloc(query_dec, query_dec->slen * 1.5);
+    mg_url_decode(bdata(query), query->slen, bdata(query_dec), query_dec->mlen, 1);
     bdestroy(query);
     YogiServer *server = (YogiServer*) cbdata;
-    uint64_t *ins_id = YogiGen_insert_into_db(server->yogen, query_dec);
-    check(ins_id, YOGISERVER_DB_ERROR, "inserting to");
+    uint64_t ins_id = YogiGen_insert_into_db(server->yogen, query_dec);
+    check(ins_id != UINT64_MAX, YOGISERVER_DB_ERROR, "inserting to");
     mg_printf(conn, HTTP_RES_200);
     mg_printf(conn, bdata(server->html_template_permalink), HTTP_PREFIX,
         HOST, PORT, ins_id, "Generate another...");
@@ -167,7 +161,6 @@ error:
         return 405;
     }
     if (query_dec) bdestroy(query_dec);
-	if (ins_id) free(ins_id);
 	log_err("Failed to create permalink for %s", bdata(query_dec));
     mg_printf(conn, HTTP_RES_500);
     return 500;

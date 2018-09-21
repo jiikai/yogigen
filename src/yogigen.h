@@ -90,7 +90,7 @@ typedef struct yogigen {
 YogiGen *YogiGen_init();
 uint8_t YogiGen_fetch_all(YogiGen *yogen);
 bstring YogiGen_generate(YogiGen *yogen);
-uint64_t *YogiGen_insert_into_db(YogiGen *yogen, bstring gen_str);
+uint64_t YogiGen_insert_into_db(YogiGen *yogen, bstring gen_str);
 bstring YogiGen_get_by_id(YogiGen* yogen, bstring hash_str);
 void YogiGen_close(YogiGen *yogen);
 
