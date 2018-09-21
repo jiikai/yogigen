@@ -11,7 +11,7 @@ Still heavily in progress.
 The app will be deployed to Heroku when ready.
 
 TODO:
-- fix programmatical and grammar errors in output
+- fix grammar and style errors in output
 - complete this readme
 - write unit tests
 - pretty up the page layout
