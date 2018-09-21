@@ -26,8 +26,6 @@
 #include "./dependencies/bstrlib.h"
 #include "dbg.h"
 #include "yogigen.h"
-#include "yogiexpr.h"
-
 // Options for the CivetWeb server
 #define DOCUMENT_ROOT "../resources/html"
 #ifdef HEROKU

@@ -442,15 +442,18 @@ error:
     return NULL;
 }
 
-uint8_t YogiGen_insert_into_db(YogiGen *yogen, Generated *gen)
+uint64_t *YogiGen_insert_into_db(YogiGen *yogen, bstring gen_str)
 {
     int ret;
     const char *template = GENS_SQL_INSERT_TEMPLATE;
     bstring query = bfromcstr(template);
+    uint64_t *rnd_id = malloc(sizeof(uint64_t));
+    check_mem(rnd_id);
     do {
-        ssize_t rnd_ret = getrandom(&gen->rnd_id, sizeof(uint64_t), 0);
+        memset(rnd_id, 0, sizeof(uint64_t));
+        ssize_t rnd_ret = getrandom(rnd_id, sizeof(uint64_t), 0);
         check(rnd_ret != -1, "Failed to source random bytes.");
-        bassignformat(query, template, gen->rnd_id, bdata(gen->str));
+        bassignformat(query, template, rnd_id, bdata(gen_str));
         while (yogen->conn->conn_count == yogen->conn->max_conn) {
             sleep(1);
         }
@@ -458,10 +461,11 @@ uint8_t YogiGen_insert_into_db(YogiGen *yogen, Generated *gen)
         check(ret != 0, "Insert was not succesful.");
     } while (ret == -1); // -1 indicates a uniqueness violation, need to roll a new id
     bdestroy(query);
-    return 1;
+    return rnd_id;
 error:
     if (query) bdestroy(query);
-    return 0;
+    if (rnd_id) free(rnd_id);
+    return NULL;
 }
 
 bstring YogiGen_get_by_id(YogiGen *yogen, bstring id_str)

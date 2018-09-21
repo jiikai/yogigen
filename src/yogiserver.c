@@ -2,7 +2,6 @@
 
 volatile sig_atomic_t terminate;
 
-// Log message callback for CivetWeb
 int log_message(const struct mg_connection *conn, const char *message)
 {
 	fprintf(stdout,"%s\n", message);
@@ -155,27 +154,20 @@ int permalink_request_handler(struct mg_connection *conn, void *cbdata)
     decode_form_uri(query_dec);
     bdestroy(query);
     YogiServer *server = (YogiServer*) cbdata;
-    Generated *gen = malloc(sizeof(Generated));
-    check_mem(gen);
-    gen->yogen_addr = server->yogen;
-    gen->str = query_dec;
-    int ins_ret = YogiGen_insert_into_db(server->yogen, gen);
-    check(ins_ret, YOGISERVER_DB_ERROR, "inserting to");
+    uint64_t *ins_id = YogiGen_insert_into_db(server->yogen, query_dec);
+    check(ins_id, YOGISERVER_DB_ERROR, "inserting to");
     mg_printf(conn, HTTP_RES_200);
     mg_printf(conn, bdata(server->html_template_permalink), HTTP_PREFIX,
-        HOST, PORT, gen->rnd_id, "Generate another...");
-    bdestroy(gen->str);
-    free(gen);
+        HOST, PORT, ins_id, "Generate another...");
+    bdestroy(query_dec);
     return 200;
 error:
     if (ret) {
         mg_printf(conn, HTTP_RES_405);
         return 405;
     }
-    if (gen){
-        bdestroy(gen->str);
-        free(gen);
-    }
+    if (query_dec) bdestroy(query_dec);
+	if (ins_id) free(ins_id);
 	log_err("Failed to create permalink for %s", bdata(query_dec));
     mg_printf(conn, HTTP_RES_500);
     return 500;
@@ -364,7 +356,6 @@ YogiServer *YogiServer_init()
 	mg_set_request_handler(server->ctx, FONT_URI, font_request_handler, server);
 
     return server;
-
 error:
     if (fp) fclose(fp);
     if (server) free(server);
@@ -424,7 +415,6 @@ int main()
     YogiServer_close(server);
     fprintf(stdout, "Server stopped.\n");
     return EXIT_SUCCESS;
-
 error:
     YogiServer_close(server);
     fprintf(stdout, "Server stopped.\n");
