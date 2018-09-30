@@ -40,7 +40,9 @@ typedef struct format_str {
     uint8_t count;
 } Format_String;
 
-/* Field "data" in the format_str struct contains 8x8 bit (accessed as uint8_t) fields, of which a number indicated by count ([0,7], indexing from the little end) contain data for one substitution in the following manner:
+/* Field "data" in the format_str struct contains 8x8 bit (accessed as uint8_t) fields,
+of which a number indicated by count ([0,7], indexing from the little end) contain data for
+one substitution in the following manner:
 
 bit no. 7  6  5 | 4  3 | 2  1 | 0
         flag     type   expr   expr

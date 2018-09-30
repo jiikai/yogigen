@@ -20,6 +20,8 @@
 
 #define GEN_SQL_INSERT_TEMPLATE "INSERT INTO Generated (id, phrase) VALUES (X'%lx'::bigint, '%s');"
 
+#define SQL_INSERT_WHERE "INSERT INTO %s (%s) VALUES (%s) WHERE %s;" // table, columns, values, condition(s)
+
 #define GEN_SQL_UPDATE_RETURN_TEMPLATE "UPDATE Generated SET last_access=CURRENT_TIMESTAMP WHERE id=X'%s'::bigint RETURNING phrase;"
 
 #define SQL_EXPR_COUNT_PG "SELECT count(*) FILTER (WHERE type=0) AS verb_count, count(*) FILTER (WHERE type=1) AS a_count, count(*) FILTER (WHERE type=2) AS c_count, count(*) FILTER (WHERE type=3) AS o_count FROM Expression;"

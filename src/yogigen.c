@@ -204,7 +204,7 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
         } else if (flag == FSTR_PREPOS) {
             sentinel("Format string flag no %d: FSTR_PREPOS is not yet implemented.", flag);
         } else if (flag == FSTR_INDEF_ART) {
-            sentinel("Format string flag no %d: FSTR_INDEF_ART shouldn't be passed onto this function at all.", flag);
+            sentinel("Format string flag no %d: FSTR_INDEF_ART shouldn't be passed onto this function.", flag);
         } else {
             sentinel("Format string flag no %d is undefined.", flag);
         }
@@ -300,7 +300,7 @@ static bstring substitute_and_prettify(YogiGen *yogen, Substitution_Data *s_data
         check(expr, "Error assigning an expression (id=%d) to template. (%s)", s_data->ins[i], s_data->str->data);
         bstring insert = s_data->modes[i] == 0 ? expr->field_1 : expr->field_2;
         int pos = bstrchr(out, '%');
-        // check for and hanbdle possibly nonmatching indef article if the corresponding FSTR flag is present
+        // check for and handle possibly nonmatching indef article if the corresponding FSTR flag is present
         if (s_data->flags[i] == FSTR_INDEF_ART && expr->flags == A_OFLAG_AN) {
             bstring fill = bfromcstr("n ");
             binsert(insert, pos - 1, fill, ' ');
@@ -431,7 +431,7 @@ bstring YogiGen_generate(YogiGen *yogen)
     check(formats, "Failed to randomize a format string.");
     Substitution_Data *s_data = process_formats(yogen, formats);
     check(s_data, "String processing failure for: %s", formats->str->data);
-    bstring out = prettify(yogen, s_data);
+    bstring out = substitute_and_prettify(yogen, s_data);
     return out;
 error:
     YogiGen_close(yogen);
