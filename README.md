@@ -2,7 +2,7 @@
 
 A tongue-in-cheek webapp for producing random teabag aphorisms ranging from the trite to the absurd.
 
-Source material from which the app constructs its output of authentic aphorisms from actual teabags.
+Source material from actual teabags.
 
 Uses PostgresSQL for storing the source material and generated strings (if a permalink is desired).
 
