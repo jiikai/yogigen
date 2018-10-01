@@ -173,13 +173,7 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
                     i++;
                 }
             }
-        } else if (flag == FSTR_POSTPOS) {
-            uint8_t *types = (uint8_t*) ref_data;
-            uint8_t type_before = types[0];
-            if (type_before >= 2) {
-                log_warn("FSTR_POSTPOS should only occur after types %d and %d\n", CONCEPT, OBJECT);
-                return res_id;
-            }
+        } else if (flag >= FSTR_POSTPOS_CEPT && flag <= FSTR_POSTPOS_OBJ) {
             uint16_t pos_x;
             uint16_t pos_y;
             uint16_t i = 0;
@@ -194,15 +188,13 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
             pos_y = ++i;
             ssize_t ret = getrandom(&res_id, sizeof(uint16_t), 0);
             check(ret != -1, "Failed to source random bytes.");
-            if (type_before == OBJECT) {
+            if (flag == FSTR_POSTPOS_OBJ) {
                 res_id %= (limit - pos_y);
                 res_id += pos_y;
             } else {
                 res_id %= (pos_y - pos_x);
                 res_id += pos_x;
             }
-        } else if (flag == FSTR_PREPOS) {
-            sentinel("Format string flag no %d: FSTR_PREPOS is not yet implemented.", flag);
         } else if (flag == FSTR_INDEF_ART) {
             sentinel("Format string flag no %d: FSTR_INDEF_ART shouldn't be passed onto this function.", flag);
         } else {
@@ -260,10 +252,8 @@ static Substitution_Data *process_formats(YogiGen *yogen, Format_String *fstr)
             } else {
                 if (flag == FSTR_UNIQUE) {
                     expr_i = random_expression_id(yogen, type, FSTR_UNIQUE, s_data->typewise_idx[type]);
-                } else if (flag == FSTR_POSTPOS) {
-                    expr_i = random_expression_id(yogen, type, flag, s_data->types);
-                } else if (flag == FSTR_PREPOS) {
-                    sentinel("Format string flag no %d: FSTR_PREPOS is not yet implemented.", flag);
+                } else if (flag >= FSTR_POSTPOS_CEPT && flag <= FSTR_POSTPOS_OBJ) {
+                    expr_i = random_expression_id(yogen, type, flag, NULL);
                 } else if (flag == FSTR_INDEF_ART) {
                     expr_i = random_expression_id(yogen, type, 0, NULL);
                     s_data->flags[i] = FSTR_INDEF_ART; // handled later
@@ -305,6 +295,7 @@ static bstring substitute_and_prettify(YogiGen *yogen, Substitution_Data *s_data
             bstring fill = bfromcstr("n ");
             binsert(insert, pos - 1, fill, ' ');
             bdestroy(fill);
+            printf("modified indef article\n");
         }
         bdelete(out, pos, 2);
         binsert(out, pos, insert, ' ');
@@ -420,6 +411,7 @@ uint8_t YogiGen_fetch_all(YogiGen *yogen)
     check(ret, "Failed to fetch expressions from database.");
     ret = fetch_formats(yogen);
     check(ret, "Failed to fetch format strings from database.");
+    print_fstr_flag_info(yogen);
     return 1;
 error:
     return 0;
@@ -487,4 +479,20 @@ bstring YogiGen_get_by_id(YogiGen *yogen, bstring id_str)
 error:
     if (query) bdestroy(query);
     return NULL;
+}
+
+/* Diagnostics */
+
+void print_fstr_flag_info(YogiGen *yogen)
+{
+    for (size_t i = 0; i < yogen->formats_count; i++) {
+        Format_String fstr = yogen->formats[i];
+        uint64_t data = fstr.data;
+        int j = 0;
+        do {
+            uint8_t jth_byte = byte_of(&data, j);
+            uint8_t flag = jth_byte >> 5;
+            fprintf(stdout, "flag %d at substitution %d in string: %s\n", flag, j, bdata(fstr.str));
+        } while (++j < fstr.count);
+    }
 }

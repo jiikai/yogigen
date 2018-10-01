@@ -53,12 +53,12 @@ The Format_String flags are enumerated below:
 
 #define FSTR_NO_FLAGS 0
 #define FSTR_UNIQUE 1
-#define FSTR_POSTPOS 2
-#define FSTR_PREPOS 3 // NOT CURRENTLY IN USE
-#define FSTR_FLAG_4 4 // NOT DEFINED OR IN USE
+#define FSTR_POSTPOS_CEPT 2
+#define FSTR_POSTPOS_ALL 3
+#define FSTR_POSTPOS_OBJ 4
 #define FSTR_INDEF_ART 5
-#define FSTR_FLAG_6 6 // NOT DEFINED OR IN USE
-#define FSTR_FLAG_7 7 // NOT DEFINED OR IN USE
+#define FSTR_FLAG_6 6 // RESERVED
+#define FSTR_FLAG_7 7 // RESERVED
 
 // A macro to extract bytes cleanly from the data field by offset:
 #define byte_of(x,y) (((uint8_t *)x)[(y)])
@@ -95,5 +95,6 @@ bstring YogiGen_generate(YogiGen *yogen);
 uint64_t YogiGen_insert_into_db(YogiGen *yogen, bstring gen_str);
 bstring YogiGen_get_by_id(YogiGen* yogen, bstring hash_str);
 void YogiGen_close(YogiGen *yogen);
+void print_fstr_flag_info(YogiGen *yogen);
 
 #endif

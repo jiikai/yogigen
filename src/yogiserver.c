@@ -392,7 +392,6 @@ int main()
     check(server, YOGISERVER_STARTUP_FAILED, "to start, aborting process");
     int ret = sigaction(SIGTERM, &server->sigactor, NULL);
     check(ret == 0, YOGISERVER_STARTUP_FAILED, "to set signal handler, aborting process");
-
     int i;
     for (i = 0; i < server->ports_count && i < 32; i++) {
 		const char *protocol = get_protocol(server, i);

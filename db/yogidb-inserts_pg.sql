@@ -117,7 +117,7 @@ INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('law', 'laws', 3,
 INSERT INTO Format_String (str, data, count) VALUES ('People who %s are %s.', X'200'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('Walk %s, talk %s, live %s.', X'30303'::bigint, 3);
 INSERT INTO Format_String (str, data, count) VALUES ('%s is the %s of %s.', X'60604'::bigint, 3);
-INSERT INTO Format_String (str, data, count) VALUES ('Never %s to %s others, %s to %s yourself.', X'48004800'::bigint, 4);
+INSERT INTO Format_String (str, data, count) VALUES ('Never %s to %s others, %s to %s yourself.', X'68006800'::bigint, 4);
 INSERT INTO Format_String (str, data, count) VALUES ('%s is within us.', X'4'::bigint, 1);
 INSERT INTO Format_String (str, data, count) VALUES ('%s is an experience of %s.', X'2C04'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('Give %s, get %s.', X'704'::bigint, 2);
@@ -144,7 +144,7 @@ INSERT INTO Format_String (str, data, count) VALUES ('%s is the highest %s.', X'
 INSERT INTO Format_String (str, data, count) VALUES ('Your %s is not what you %s, it''s what you %s.', X'280004'::bigint, 3);
 INSERT INTO Format_String (str, data, count) VALUES ('Your %s is your best friend.', X'4'::bigint, 1);
 INSERT INTO Format_String (str, data, count) VALUES ('%s from your %s.', X'600'::bigint, 2);
-INSERT INTO Format_String (str, data, count) VALUES ('The art of %s is to %s all.', X'4004'::bigint, 2);
+INSERT INTO Format_String (str, data, count) VALUES ('The art of %s is to %s all.', X'6004'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s is a %s. %s is the %s.', X'2D2EA604'::bigint, 4);
 INSERT INTO Format_String (str, data, count) VALUES ('There is no %s without %s.', X'2C04'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s has no %s and no %s.', X'342C04'::bigint, 3);
@@ -174,3 +174,4 @@ INSERT INTO Format_String (str, data, count) VALUES ('The %s of your %s is %s.',
 INSERT INTO Format_String (str, data, count) VALUES ('%s is %s.', X'204'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s %s.', X'500'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s is in your %s.', X'2C04'::bigint, 2);
+INSERT INTO Format_String (str, data, count) VALUES ('You don''t need %s, you are the %s.', X'404'::bigint, 2);
