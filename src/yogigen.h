@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <sys/random.h>
 #include "./dependencies/bstrlib.h"
-#include "./dependencies/monocypher.h"
 #include "dbg.h"
 #include "yogidb.h"
 
@@ -89,6 +88,7 @@ typedef struct yogigen {
     Connection *conn;
 } YogiGen;
 
+// Public access functions
 YogiGen *YogiGen_init();
 uint8_t YogiGen_fetch_all(YogiGen *yogen);
 bstring YogiGen_generate(YogiGen *yogen);

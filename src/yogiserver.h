@@ -12,7 +12,6 @@
 #define sleeper(x) sleep(x)
 #endif
 #include <signal.h>
-/* link with -lrt */
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -26,6 +25,7 @@
 #include "./dependencies/bstrlib.h"
 #include "dbg.h"
 #include "yogigen.h"
+
 // Options for the CivetWeb server
 #define DOCUMENT_ROOT "../resources/html"
 #ifdef HEROKU
@@ -33,7 +33,7 @@
     #define HOST "yogigen.herokuapp.com"
 #else
     #define PORT "8080"
-    #define HOST "joa-p702"
+    #define HOST "localhost"
 #endif
 #define REQUEST_TIMEOUT "10000"
 #define ERR_LOG "../log/server.log"
@@ -98,12 +98,10 @@
 #ifndef HEROKU
     #define EXIT_URI "/exit"
 #endif
-// For serving the css and fonts
+
+// URIs for serving the css and fonts
 #define CSS_URI "/css/style.css"
 #define FONT_URI "/fonts"
-
-// id in /getbyid is a 64-byte hash
-#define HASHLEN 64
 
 // HTML template paths (relative to the running binary)
 #define YOGIGEN_INDEX_HTML "../resources/index.html"
@@ -129,30 +127,28 @@
 #define BTN_TXT_COUNT 4
 #define BTN_TXT_DEFAULT 3
 
-// Error messages
-#define YOGISERVER_STARTUP_FAILED "Server failed %s." // to start, fetching ports, ...
-#define YOGISERVER_405_NOT_ALLOWED "Method %s not allowed." // [HTTP method]
-#define YOGISERVER_DB_ERROR "Error in %s database." // inserting to, selecting from, connecting to ...
-#define YOGISERVER_GEN_ERROR "YogiGen failed %s." // to generate string, to allocate requisite memory ...
-#define YOGISERVER_FILE_ERR "Failed %s file %s" // [fileop] [path]
-
 // Port protocol getter macro
 #define get_protocol(server,i) server->ports[i].is_ssl ? "https" : "http"
 
-// Server wrapper struct
-typedef struct yogiserver {
-    struct mg_context *ctx;
-    struct mg_callbacks callbacks;
-    struct mg_server_ports ports[32];
-    int8_t ports_count;
-    struct sigaction sigactor;
-    YogiGen *yogen;
-    bstring sys_info;
+// Wrapper struct for page substance
+typedef struct pagedata {
     bstring html_template_index;
     bstring html_template_gen;
     bstring html_template_permalink;
     bstring html_template_getbyid;
-    const char *btn_txts[BTN_TXT_COUNT];
+    char *btn_txts[BTN_TXT_COUNT];
+} PageData;
+
+// Wrapper struct for the server
+typedef struct yogiserver {
+    struct sigaction sigactor;
+    struct mg_context *ctx;
+    struct mg_callbacks callbacks;
+    struct mg_server_ports ports[32];
+    int8_t ports_count;
+    YogiGen *yogen;
+    PageData pg_data;
+    char *sys_info;
 } YogiServer;
 
 // Public access functions

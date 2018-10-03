@@ -97,7 +97,7 @@ error:
 
 static Format_String *get_formats(YogiGen *yogen, uint16_t id)
 {
-    check(id < yogen->formats_count, "Invalid index %d", id);
+    check(id < yogen->formats_count, ERR_INVAL, "YOGIGEN", "index", id);
     return &yogen->formats[id];
 error:
     return NULL;
@@ -107,7 +107,7 @@ static Format_String *random_formats(YogiGen *yogen)
 {
     uint16_t rnd;
     ssize_t ret = getrandom(&rnd, sizeof(uint16_t), 0);
-    check(ret != -1, "Failed to source random bytes.");
+    check(ret != -1, ERR_FAIL, "YOGIGEN", "sourcing random bytes");
     rnd %= yogen->formats_count;
     return get_formats(yogen, rnd);
 error:
@@ -118,19 +118,19 @@ static Expression *get_expression(YogiGen *yogen, uint16_t id, uint16_t type)
 {
     switch (type) {
         case VERB:
-            check(id < yogen->verb_count, "Invalid index %d", id);
+            check(id < yogen->verb_count, ERR_INVAL, "YOGIGEN", "index", id);
             return &yogen->verbs[id];
         case ADJECTIVE:
-            check(id < yogen->adj_count, "Invalid index %d", id);
+            check(id < yogen->adj_count, ERR_INVAL, "YOGIGEN", "index", id);
             return &yogen->adjs[id];
         case CONCEPT:
-            check(id < yogen->cept_count, "Invalid index %d", id);
+            check(id < yogen->cept_count, ERR_INVAL, "YOGIGEN", "index", id);
             return &yogen->cepts[id];
         case OBJECT:
-            check(id < yogen->obj_count, "Invalid index %d", id);
+            check(id < yogen->obj_count, ERR_INVAL, "YOGIGEN", "index", id);
             return &yogen->objs[id];
         default:
-            sentinel("Unknown type code %d\n", type);
+            sentinel(ERR_UNDEF, "YOGIGEN", "undefined expression type code", type);
 error:      return NULL;
     }
 }
@@ -153,10 +153,10 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
             limit = yogen->obj_count;
             break;
         default:
-            sentinel("Unknown type code %d\n", type);
+            sentinel(ERR_UNDEF, "YOGIGEN", "expression type code", type);
     }
     ssize_t ret = getrandom(&res_id, sizeof(uint16_t), 0);
-    check(ret != -1, "Failed to source random bytes.");
+    check(ret != -1, ERR_FAIL, "YOGIGEN", "sourcing random bytes");
     res_id %= limit;
     // Flag check and handling:
     if (flag) {
@@ -166,7 +166,7 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
             while (i < 4) {
                 if (used_ids[i] >= 0 && used_ids[i] == res_id) {
                     ssize_t ret = getrandom(&res_id, sizeof(uint16_t), 0);
-                    check(ret != -1, "Failed to source random bytes.");
+                    check(ret != -1, "YOGIGEN: %s", YOGIGEN_PRNG_ERROR);
                     res_id %= limit;
                     i = 0;
                 } else {
@@ -187,7 +187,7 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
             } while (yogen->verbs[i].flags > VFLAG_NPOSTP_ALL_OK);
             pos_y = ++i;
             ssize_t ret = getrandom(&res_id, sizeof(uint16_t), 0);
-            check(ret != -1, "Failed to source random bytes.");
+            check(ret != -1, ERR_FAIL, "YOGIGEN", "sourcing pseudorandom bytes");
             if (flag == FSTR_POSTPOS_OBJ) {
                 res_id %= (limit - pos_y);
                 res_id += pos_y;
@@ -196,9 +196,9 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
                 res_id += pos_x;
             }
         } else if (flag == FSTR_INDEF_ART) {
-            sentinel("Format string flag no %d: FSTR_INDEF_ART shouldn't be passed onto this function.", flag);
+            sentinel(ERR_IMPRO, "YOGIGEN", "format string flag for this function", flag);
         } else {
-            sentinel("Format string flag no %d is undefined.", flag);
+            sentinel(ERR_UNDEF, "YOGIGEN", "format string flag", flag);
         }
     }
     return res_id;
@@ -210,7 +210,7 @@ error:
 static Substitution_Data *s_data_build()
 {
     Substitution_Data *s_data = malloc(sizeof(Substitution_Data));
-    check_mem(s_data);
+    check(s_data, ERR_MEM, "YOGIGEN");
     memset(s_data->ins, -1, sizeof(int16_t) * 8);
     memset(s_data->modes, 0, sizeof(uint8_t) * 8);
     memset(s_data->types, 0, sizeof(uint8_t) * 8);
@@ -229,7 +229,7 @@ static Substitution_Data *process_formats(YogiGen *yogen, Format_String *fstr)
     uint64_t data = fstr->data;
     uint8_t i = 0;
     Substitution_Data *s_data = s_data_build();
-    check(s_data, "Failed to create a Substitution_Data template.");
+    check(s_data, ERR_MEM, "YOGIGEN");
     while (i < fstr->count) {
         uint8_t datum = byte_of(&data, i);
         uint8_t cpy = datum;
@@ -258,10 +258,10 @@ static Substitution_Data *process_formats(YogiGen *yogen, Format_String *fstr)
                     expr_i = random_expression_id(yogen, type, 0, NULL);
                     s_data->flags[i] = FSTR_INDEF_ART; // handled later
                 } else {
-                    sentinel("Format string flag no %d is undefined.", flag);
+                    sentinel(ERR_UNDEF, "YOGIGEN", "format string flag", flag);
                 }
             }
-            check(expr_i != 0xFFFF, "random_expression_id() returned %d", UINT16_MAX);
+            check(expr_i != 0xFFFF, ERR_FAIL, "YOGIGEN", "retrieving resources");
             s_data->typewise_idx[type][type_i] = expr_i;
         } else {
             expr_i = s_data->typewise_idx[type][type_i];
@@ -287,7 +287,7 @@ static bstring substitute_and_prettify(YogiGen *yogen, Substitution_Data *s_data
     bstring out = bstrcpy(s_data->str);
     do {
         expr = get_expression(yogen, s_data->ins[i], s_data->types[i]);
-        check(expr, "Error assigning an expression (id=%d) to template. (%s)", s_data->ins[i], s_data->str->data);
+        check(expr, ERR_FAIL, "YOGIGEN", "substituting expression");
         bstring insert = s_data->modes[i] == 0 ? expr->field_1 : expr->field_2;
         int pos = bstrchr(out, '%');
         // check for and handle possibly nonmatching indef article if the corresponding FSTR flag is present
@@ -295,7 +295,6 @@ static bstring substitute_and_prettify(YogiGen *yogen, Substitution_Data *s_data
             bstring fill = bfromcstr("n ");
             binsert(insert, pos - 1, fill, ' ');
             bdestroy(fill);
-            printf("modified indef article\n");
         }
         bdelete(out, pos, 2);
         binsert(out, pos, insert, ' ');
@@ -324,32 +323,32 @@ error:
 YogiGen *YogiGen_init()
 {
     YogiGen *yogen = malloc(sizeof(YogiGen));
-    check_mem(yogen);
+    check(yogen, ERR_MEM, "YOGIGEN");
 
     yogen->conn = open_conn();
-    check(yogen->conn, "Failed to establish db connection.");
+    check(yogen->conn, ERR_FAIL, "YOGIGEN", "connecting to database");
 
     int8_t ret = fetch_counts(yogen);
-    check(ret, "Failed to fetch table row counts from database.");
+    check(ret, ERR_FAIL, "YOGIGEN", "querying the database");
 
     Format_String *formats = malloc(sizeof(Format_String) * yogen->formats_count);
-    check_mem(formats);
+    check(formats, ERR_MEM, "YOGIGEN");
     yogen->formats = formats;
 
     Expression *verbs = malloc(sizeof(Expression) * yogen->verb_count);
-    check_mem(verbs);
+    check(verbs, ERR_MEM, "YOGIGEN");
     yogen->verbs = verbs;
 
     Expression *adjs = malloc(sizeof(Expression) * yogen->adj_count);
-    check_mem(adjs);
+    check(adjs, ERR_MEM, "YOGIGEN");
     yogen->adjs = adjs;
 
     Expression *cepts = malloc(sizeof(Expression) * yogen->cept_count);
-    check_mem(cepts);
+    check(cepts, ERR_MEM, "YOGIGEN");
     yogen->cepts = cepts;
 
     Expression *objs = malloc(sizeof(Expression) * yogen->obj_count);
-    check_mem(objs);
+    check(objs, ERR_MEM, "YOGIGEN");
     yogen->objs = objs;
 
     return yogen;
@@ -408,10 +407,13 @@ uint8_t YogiGen_fetch_all(YogiGen *yogen)
 {
     uint8_t ret;
     ret = fetch_expressions(yogen);
-    check(ret, "Failed to fetch expressions from database.");
+    check(ret, ERR_FAIL, "YOGIGEN", "querying the database");
     ret = fetch_formats(yogen);
-    check(ret, "Failed to fetch format strings from database.");
+    check(ret, ERR_FAIL, "YOGIGEN", "querying the database");
+#ifndef NDEBUG
     print_fstr_flag_info(yogen);
+#endif
+    close_blocking_conn(yogen->conn);
     return 1;
 error:
     return 0;
@@ -420,9 +422,9 @@ error:
 bstring YogiGen_generate(YogiGen *yogen)
 {
     Format_String *formats = random_formats(yogen);
-    check(formats, "Failed to randomize a format string.");
+    check(formats, ERR_FAIL, "YOGIGEN", "retrieving resources");
     Substitution_Data *s_data = process_formats(yogen, formats);
-    check(s_data, "String processing failure for: %s", formats->str->data);
+    check(s_data, ERR_FAIL_A, "YOGIGEN", "processing string", bdata(formats->str));
     bstring out = substitute_and_prettify(yogen, s_data);
     return out;
 error:
@@ -438,14 +440,14 @@ uint64_t YogiGen_insert_into_db(YogiGen *yogen, bstring gen_str)
     uint64_t rnd_id = 0;
     do {
         ssize_t rnd_ret = getrandom(&rnd_id, sizeof(uint64_t), 0);
-        check(rnd_ret != -1, "Failed to source random bytes.");
+        check(rnd_ret != -1, ERR_FAIL, "YOGIGEN", "sourcing pseudorandom bytes");
         if (rnd_id != UINT64_MAX) { // reserve UINT64_MAX for error
             bassignformat(query, template, rnd_id, bdata(gen_str));
             while (yogen->conn->conn_count == yogen->conn->max_conn) {
                 sleep(1);
             }
             ret = postgres_insert_concurrent(yogen->conn, bdata(query));
-            check(ret != 0, "Insert was not succesful.");
+            check(ret != 0, ERR_FAIL, "YOGIGEN", "querying the database");
         } else {
             ret = -1;
         }
@@ -467,7 +469,7 @@ bstring YogiGen_get_by_id(YogiGen *yogen, bstring id_str)
     }
     PGresult *res = postgres_select_concurrent(yogen->conn, bdata(query));
     bdestroy(query);
-    check(res, "Error obtaining result set from db.");
+    check(res, ERR_FAIL, "YOGIGEN", "querying the database");
     if (!PQntuples(res)) {
         log_warn("No rows matching id, returning original input string %s.", id_str->data);
         PQclear(res);
