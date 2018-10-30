@@ -25,10 +25,15 @@ BINARY := main
 
 # RULES
 
+.PHONY: all valgrind tests clean
+
 default: all
 
-all:
+all: $(BINDIR)
 	$(CC) $(CFLAGS) $(DEBUG) $(SRCS) -DHEROKU -o $(BINDIR)/$(BINARY) $(LIBS)
+
+$(BINDIR):
+	mkdir $@
 
 valgrind:
 	valgrind \
@@ -42,7 +47,7 @@ valgrind:
 
 
 # Compile tests and run the test binary
-.PHONY: tests
+
 tests:
 	$(CC) $(CFLAGS) -I/curl $(DEBUG) $(TEST_SRCS) -o $(TEST_OBJECTS) $(TEST_LIBS)
 	@which ldconfig && ldconfig -C /tmp/ld.so.cache || true # caching the library linking
@@ -50,7 +55,7 @@ tests:
 
 # Rule for cleaning the project
 clean:
-	@rm -rvf $(BINDIR)/$(BINARY) $(LIBDIR)/* $(LOGDIR)/*;
+	@rm -rvf $(BINDIR)/* $(LIBDIR)/* $(LOGDIR)/*;
 	@find . -name "*.gc*" -exec rm {} \;
 ifeq ($(OS),Darwin)
 	@rm -rf `find . -name "*.dSYM" -print`
