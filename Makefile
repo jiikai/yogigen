@@ -28,7 +28,7 @@ BINARY := main
 default: all
 
 all:
-	$(CC) $(CFLAGS) $(DEBUG) $(SRCS) -o $(BINDIR)/$(BINARY) $(LIBS)
+	$(CC) $(CFLAGS) $(DEBUG) $(SRCS) -DHEROKU -o $(BINDIR)/$(BINARY) $(LIBS)
 
 valgrind:
 	valgrind \
