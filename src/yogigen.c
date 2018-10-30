@@ -50,10 +50,10 @@ static uint8_t fetch_counts(YogiGen *yogen)
     int ret;
     ret = postgres_select_cycle(yogen->conn->db, SQL_EXPR_COUNT_PG,
        read_count_result_set, yogen);
-    check(ret, "Postgres: %s", PQerrorMessage(yogen->conn->db));
+    check(ret, ERR_EXTERN, "POSTGRES", PQerrorMessage(yogen->conn->db));
     ret = postgres_select_cycle(yogen->conn->db, SQL_FRMT_COUNT_PG,
       read_count_result_set, yogen);
-    check(ret, "Postgres: %s", PQerrorMessage(yogen->conn->db));
+    check(ret, ERR_EXTERN, "POSTGRES", PQerrorMessage(yogen->conn->db));
     return 1;
 error:
     return 0;
@@ -64,7 +64,7 @@ static uint8_t fetch_formats(YogiGen *yogen)
     int ret;
     char *query = FRMT_SQL_SELECT_TEMPLATE;
     ret = postgres_select_cycle(yogen->conn->db, query, read_frmt_result_set, yogen->formats);
-    check(ret, "Postgres: %s", PQerrorMessage(yogen->conn->db));
+    check(ret, ERR_EXTERN, "POSTGRES", PQerrorMessage(yogen->conn->db));
     return 1;
 error:
     return 0;
@@ -83,7 +83,7 @@ static uint8_t fetch_expressions(YogiGen *yogen)
         bassignformat(query, template, factor, i);
         ret = postgres_select_cycle(yogen->conn->db, bdata(query),
         read_expr_result_set, arr_ptrs[i]);
-        check(ret, "Postgres: %s", PQerrorMessage(yogen->conn->db));
+        check(ret, ERR_EXTERN, "POSTGRES", PQerrorMessage(yogen->conn->db));
         factor += arr_size[i];
         i++;
     } while (i < 4);
@@ -166,7 +166,7 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
             while (i < 4) {
                 if (used_ids[i] >= 0 && used_ids[i] == res_id) {
                     ssize_t ret = getrandom(&res_id, sizeof(uint16_t), 0);
-                    check(ret != -1, "YOGIGEN: %s", YOGIGEN_PRNG_ERROR);
+                    check(ret != -1, ERR_FAIL, "YOGIGEN", "sourcing random bytes");
                     res_id %= limit;
                     i = 0;
                 } else {

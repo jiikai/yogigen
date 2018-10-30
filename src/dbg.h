@@ -65,6 +65,7 @@ format string with 1 or more arguments is used with them. */
 #define ERR_UNDEF "[%s]: Undefined %s (got %d)."
 #define ERR_NALLOW "[%s] %s not allowed."
 #define ERR_NALLOW_A "[%s] %s not allowed, use %s instead."
+#define ERR_EXTERN "[%s]: %s."
 
 
 #endif

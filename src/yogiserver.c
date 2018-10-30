@@ -275,6 +275,22 @@ void dyno_signal_handler(int sig)
     }
 }
 
+#ifdef HEROKU
+int acme_challenge_handler(struct mg_connection *conn, void *cbdata)
+{
+	char *challenge = getenv("LETS_ENCRYPT_CHALLENGE");
+	if (challenge) {
+		mg_printf(conn, HTTP_RES_200);
+		mg_printf(conn, challenge);
+		fprintf(stdout, "%s\n", challenge);
+		return 200;
+	} else {
+		mg_printf(conn, HTTP_RES_404);
+		return 404;
+	}
+}
+#endif
+
 YogiServer *YogiServer_init()
 {
     YogiServer *server = malloc(sizeof(YogiServer));
@@ -338,7 +354,9 @@ YogiServer *YogiServer_init()
 #endif
 	mg_set_request_handler(server->ctx, CSS_URI, css_request_handler, server);
 	mg_set_request_handler(server->ctx, FONT_URI, font_request_handler, server);
-
+#ifdef HEROKU
+	mg_set_request_handler(server->ctx, ACME_URI, acme_challenge_handler, server);
+#endif
     return server;
 error:
     if (fp) fclose(fp);

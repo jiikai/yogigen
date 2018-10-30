@@ -98,7 +98,9 @@
 #ifndef HEROKU
     #define EXIT_URI "/exit"
 #endif
-
+#ifdef HEROKU
+    #define ACME_URI "/.well-known/acme-challenge"
+#endif
 // URIs for serving the css and fonts
 #define CSS_URI "/css/style.css"
 #define FONT_URI "/fonts"
