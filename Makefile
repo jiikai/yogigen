@@ -50,7 +50,7 @@ tests:
 
 # Rule for cleaning the project
 clean:
-	@rm -rvf $(BINDIR)/* $(LIBDIR)/* $(LOGDIR)/*;
+	@rm -rvf $(BINDIR)/$(BINARY) $(LIBDIR)/* $(LOGDIR)/*;
 	@find . -name "*.gc*" -exec rm {} \;
 ifeq ($(OS),Darwin)
 	@rm -rf `find . -name "*.dSYM" -print`
