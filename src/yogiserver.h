@@ -86,7 +86,11 @@
     }
 /* END COPYRIGHT */
 #else
-    #define HTTP_PREFIX "http://"
+    #ifdef HEROKU
+        #define HTTP_PREFIX "https://"
+    #else
+        #define HTTP_PREFIX "http://"
+    #endif
 #endif
 #define AUTH_DOM_CHECK "no"
 

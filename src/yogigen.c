@@ -182,10 +182,18 @@ static uint16_t random_expression_id(YogiGen *yogen, uint8_t type, uint8_t flag,
             ssize_t ret = getrandom(&res_id, sizeof(uint16_t), 0);
             check(ret != -1, ERR_FAIL, "YOGIGEN", "sourcing pseudorandom bytes");
             if (flag == FSTR_POSTPOS_OBJ) {
-                res_id %= (limit - pos_y);
+                limit -= pos_y;
+                if (!limit) {
+                    limit++;
+                }
+                res_id %= limit;
                 res_id += pos_y;
             } else {
-                res_id %= (pos_y - pos_x);
+                pos_y -= pos_x;
+                if (!pos_y) {
+                    pos_y++;
+                }
+                res_id %= pos_y;
                 res_id += pos_x;
             }
         } else if (flag == FSTR_INDEF_ART) {
