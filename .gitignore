@@ -2,5 +2,6 @@
 .env
 .gch
 .htmlhintrc
+/bin/vgcore.15623
 /depr
 /resources/originals
