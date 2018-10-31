@@ -30,7 +30,7 @@ BINARY := main
 default: all
 
 all: $(BINDIR)
-	$(CC) $(CFLAGS) $(DEBUG) $(SRCS) -o $(BINDIR)/$(BINARY) $(LIBS)
+	$(CC) $(CFLAGS) $(DEBUG) $(SRCS) -DHEROKU -o $(BINDIR)/$(BINARY) $(LIBS)
 
 $(BINDIR):
 	mkdir $@
