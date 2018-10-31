@@ -20,7 +20,7 @@ TESTLIBS := $(LIBS) -lcurl -L/curl
 SRCS := $(wildcard $(SRCDIR)/**/*.c $(SRCDIR)/*.c)
 TEST_SRCS= $(wildcard $(TESTDIR)/*_test.c)
 OBJECTS :=$(patsubst %.c,$(LIBDIR)/%.o,$(SRCS))
-TEST_OBJECTS :=$(patsubst %.c,%.o,$(TEST_SRCmakeS))
+TEST_OBJECTS :=$(patsubst %.c,%.o,$(TEST_SRCS))
 BINARY := main
 
 # RULES
