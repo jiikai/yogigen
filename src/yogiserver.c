@@ -143,7 +143,7 @@ int permalink_request_handler(struct mg_connection *conn, void *cbdata)
     check(ins_id != UINT64_MAX, ERR_FAIL_A, "YOGISERVER", "querying the database", "with INSERT");
     mg_printf(conn, HTTP_RES_200);
     mg_printf(conn, bdata(server->pg_data.html_template_permalink), HTTP_PREFIX,
-        HOST, PORT, ins_id, "Generate another...");
+        HOST, PORT, ins_id);
     bdestroy(query_dec);
     return 200;
 error:
