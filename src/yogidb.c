@@ -160,7 +160,7 @@ error:
     return NULL;
 }
 
-void close_blocking_conn(Connection *conn)
+void close_nonblocking_conn(Connection *conn)
 {
     if (conn->db) {
         PQfinish(conn->db);

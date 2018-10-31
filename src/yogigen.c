@@ -23,10 +23,9 @@ static void read_frmt_result_set(void *arg, PGresult *res_set)
     Format_String *arr = (Format_String*) arg;
     uint16_t count = (uint16_t) PQntuples(res_set);
     for (uint16_t i = 0; i < count; i++) {
-        uint16_t id = (uint16_t) atoi(PQgetvalue(res_set, i, 0)) - 1;
-        arr[id].str = bfromcstr(PQgetvalue(res_set, i, 1));
-        arr[id].data = (uint64_t) atol(PQgetvalue(res_set, i, 2));
-        arr[id].count = (uint8_t) atoi(PQgetvalue(res_set, i, 3));
+        arr[i].str = bfromcstr(PQgetvalue(res_set, i, 0));
+        arr[i].data = (uint64_t) atol(PQgetvalue(res_set, i, 1));
+        arr[i].count = (uint8_t) atoi(PQgetvalue(res_set, i, 2));
     }
 }
 
@@ -35,24 +34,21 @@ static void read_expr_result_set(void *arg, PGresult *res_set)
     Expression *arr = (Expression*) arg;
     uint16_t count = (uint16_t) PQntuples(res_set);
     for (uint16_t i = 0; i < count; i++) {
-        uint16_t id = (uint16_t) atoi(PQgetvalue(res_set, i, 0));
-        arr[id].id = id;
-        arr[id].field_1 = bfromcstr(PQgetvalue(res_set, i, 1));
-        arr[id].field_2 = bfromcstr(PQgetvalue(res_set, i, 2));
-        arr[id].type = (uint8_t) atoi(PQgetvalue(res_set, i, 3));
-        arr[id].flags = (uint8_t) atoi(PQgetvalue(res_set, i, 4));
+        arr[i].field_1 = bfromcstr(PQgetvalue(res_set, i, 0));
+        arr[i].field_2 = bfromcstr(PQgetvalue(res_set, i, 1));
+        arr[i].type = (uint8_t) atoi(PQgetvalue(res_set, i, 2));
+        arr[i].flags = (uint8_t) atoi(PQgetvalue(res_set, i, 3));
     }
 }
-
 
 static uint8_t fetch_counts(YogiGen *yogen)
 {
     int ret;
     ret = postgres_select_cycle(yogen->conn->db, SQL_EXPR_COUNT_PG,
-       read_count_result_set, yogen);
+        read_count_result_set, yogen);
     check(ret, ERR_EXTERN, "POSTGRES", PQerrorMessage(yogen->conn->db));
     ret = postgres_select_cycle(yogen->conn->db, SQL_FRMT_COUNT_PG,
-      read_count_result_set, yogen);
+        read_count_result_set, yogen);
     check(ret, ERR_EXTERN, "POSTGRES", PQerrorMessage(yogen->conn->db));
     return 1;
 error:
@@ -74,17 +70,14 @@ static uint8_t fetch_expressions(YogiGen *yogen)
 {
     int ret;
     uint8_t i = 0;
-    uint16_t factor = 1;
     const char *template = EXPR_SQL_SELECT_TEMPLATE;
     Expression *arr_ptrs[4] = {yogen->verbs, yogen->adjs, yogen->cepts, yogen->objs};
-    uint16_t arr_size[4] = {yogen->verb_count, yogen->adj_count, yogen->cept_count, yogen->obj_count};
     bstring query = bfromcstr(template);
     do {
-        bassignformat(query, template, factor, i);
+        bassignformat(query, template, i);
         ret = postgres_select_cycle(yogen->conn->db, bdata(query),
         read_expr_result_set, arr_ptrs[i]);
         check(ret, ERR_EXTERN, "POSTGRES", PQerrorMessage(yogen->conn->db));
-        factor += arr_size[i];
         i++;
     } while (i < 4);
     bdestroy(query);
@@ -95,10 +88,10 @@ error:
 }
 
 
-static Format_String *get_formats(YogiGen *yogen, uint16_t id)
+static Format_String *get_formats(YogiGen *yogen, uint16_t idx)
 {
-    check(id < yogen->formats_count, ERR_INVAL, "YOGIGEN", "index", id);
-    return &yogen->formats[id];
+    check(idx < yogen->formats_count, ERR_INVAL, "YOGIGEN", "index", idx);
+    return &yogen->formats[idx];
 error:
     return NULL;
 }
@@ -114,21 +107,21 @@ error:
     return NULL;
 }
 
-static Expression *get_expression(YogiGen *yogen, uint16_t id, uint16_t type)
+static Expression *get_expression(YogiGen *yogen, uint16_t idx, uint16_t type)
 {
     switch (type) {
         case VERB:
-            check(id < yogen->verb_count, ERR_INVAL, "YOGIGEN", "index", id);
-            return &yogen->verbs[id];
+            check(idx < yogen->verb_count, ERR_INVAL, "YOGIGEN", "index", idx);
+            return &yogen->verbs[idx];
         case ADJECTIVE:
-            check(id < yogen->adj_count, ERR_INVAL, "YOGIGEN", "index", id);
-            return &yogen->adjs[id];
+            check(idx < yogen->adj_count, ERR_INVAL, "YOGIGEN", "index", idx);
+            return &yogen->adjs[idx];
         case CONCEPT:
-            check(id < yogen->cept_count, ERR_INVAL, "YOGIGEN", "index", id);
-            return &yogen->cepts[id];
+            check(idx < yogen->cept_count, ERR_INVAL, "YOGIGEN", "index", idx);
+            return &yogen->cepts[idx];
         case OBJECT:
-            check(id < yogen->obj_count, ERR_INVAL, "YOGIGEN", "index", id);
-            return &yogen->objs[id];
+            check(idx < yogen->obj_count, ERR_INVAL, "YOGIGEN", "index", idx);
+            return &yogen->objs[idx];
         default:
             sentinel(ERR_UNDEF, "YOGIGEN", "undefined expression type code", type);
 error:      return NULL;
@@ -293,10 +286,13 @@ static bstring substitute_and_prettify(YogiGen *yogen, Substitution_Data *s_data
         // check for and handle possibly nonmatching indef article if the corresponding FSTR flag is present
         if (s_data->flags[i] == FSTR_INDEF_ART && expr->flags == A_OFLAG_AN) {
             bstring fill = bfromcstr("n ");
-            binsert(insert, pos - 1, fill, ' ');
+            binsert(insert, 0, fill, ' ');
             bdestroy(fill);
+            pos--;
+            bdelete(out, pos, 3);
+        } else {
+            bdelete(out, pos, 2);
         }
-        bdelete(out, pos, 2);
         binsert(out, pos, insert, ' ');
         i++;
     } while (i < s_data->count);
@@ -410,10 +406,7 @@ uint8_t YogiGen_fetch_all(YogiGen *yogen)
     check(ret, ERR_FAIL, "YOGIGEN", "querying the database");
     ret = fetch_formats(yogen);
     check(ret, ERR_FAIL, "YOGIGEN", "querying the database");
-#ifndef NDEBUG
-    print_fstr_flag_info(yogen);
-#endif
-    close_blocking_conn(yogen->conn);
+    close_nonblocking_conn(yogen->conn);
     return 1;
 error:
     return 0;

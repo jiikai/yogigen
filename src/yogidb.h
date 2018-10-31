@@ -12,15 +12,15 @@
 #include "./dependencies/bstrlib.h"
 
 #define MAX_CONN_NUMBER 20
-#define CONN_TIMEOUT 10
+#define CONN_TIMEOUT 7
 
 // SQL query templates
 #define EXPR_SQL_SELECT_TEMPLATE \
-"SELECT id-%d as id, field_1 AS field_1, field_2 AS field_2, type AS type, flags AS flags \
+"SELECT field_1 AS field_1, field_2 AS field_2, type AS type, flags AS flags \
 FROM Expression WHERE type=%d ORDER BY flags ASC;"
 
 #define FRMT_SQL_SELECT_TEMPLATE \
-"SELECT id as id, str AS str, data AS data, count AS count \
+"SELECT str AS str, data AS data, count AS count \
 FROM Format_String;"
 
 #define GEN_SQL_INSERT_TEMPLATE \
@@ -54,7 +54,7 @@ typedef void (*handle_result) (void *a, PGresult *res_set);
 
 Connection *open_conn();
 void close_conn(Connection *conn);
-void close_blocking_conn(Connection *conn);
+void close_nonblocking_conn(Connection *conn);
 int postgres_select_cycle(PGconn *db, char* query, handle_result function, void *arg);
 PGresult *postgres_select_concurrent(Connection *conn, char* query);
 int postgres_insert_concurrent(Connection *conn, char* query);

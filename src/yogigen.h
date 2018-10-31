@@ -12,7 +12,6 @@
 
 // Representation of the db table "Expression":
 typedef struct expression {
-    uint16_t id;
     uint8_t type;
     uint8_t flags;
     bstring field_1;

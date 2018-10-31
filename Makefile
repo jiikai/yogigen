@@ -20,7 +20,7 @@ TESTLIBS := $(LIBS) -lcurl -L/curl
 SRCS := $(wildcard $(SRCDIR)/**/*.c $(SRCDIR)/*.c)
 TEST_SRCS= $(wildcard $(TESTDIR)/*_test.c)
 OBJECTS :=$(patsubst %.c,$(LIBDIR)/%.o,$(SRCS))
-TEST_OBJECTS :=$(patsubst %.c,%.o,$(TEST_SRCS))
+TEST_OBJECTS :=$(patsubst %.c,%.o,$(TEST_SRCmakeS))
 BINARY := main
 
 # RULES
@@ -30,7 +30,7 @@ BINARY := main
 default: all
 
 all: $(BINDIR)
-	$(CC) $(CFLAGS) $(DEBUG) $(SRCS) -DHEROKU -o $(BINDIR)/$(BINARY) $(LIBS)
+	$(CC) $(CFLAGS) $(DEBUG) $(SRCS) -o $(BINDIR)/$(BINARY) $(LIBS)
 
 $(BINDIR):
 	mkdir $@

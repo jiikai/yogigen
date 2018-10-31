@@ -368,7 +368,8 @@ void YogiServer_close(YogiServer *server)
 {
     if (server) {
         if (server->ctx) {
-            mg_stop(server->ctx);
+            mg_stop(server->ctx); // stop accepting new connections
+			sleeper(4); // wait for downstream requests to complete
         }
         if (server->pg_data.html_template_index) {
             bdestroy(server->pg_data.html_template_index);
