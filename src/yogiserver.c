@@ -267,6 +267,18 @@ error:
 	return 405;
 }
 
+int js_request_handler(struct mg_connection *conn, void *cbdata)
+{
+	const struct mg_request_info *req_info = mg_get_request_info(conn);
+    int ret = mg_strncasecmp(req_info->request_method, "GET", 3);
+    check(!ret, ERR_NALLOW_A, "YOGISERVER", req_info->request_method, "GET");
+	mg_send_mime_file(conn, YOGIGEN_JS_CP2CB, "text/javascript");
+	return 200;
+error:
+	mg_printf(conn, HTTP_RES_405);
+	return 405;
+}
+
 void dyno_signal_handler(int sig)
 {
 	log_info("Signaling event: %d", sig);
@@ -354,6 +366,7 @@ YogiServer *YogiServer_init()
 #endif
 	mg_set_request_handler(server->ctx, CSS_URI, css_request_handler, server);
 	mg_set_request_handler(server->ctx, FONT_URI, font_request_handler, server);
+	mg_set_request_handler(server->ctx, JS_URI, js_request_handler, server);
 #ifdef HEROKU
 	mg_set_request_handler(server->ctx, ACME_URI, acme_challenge_handler, server);
 #endif

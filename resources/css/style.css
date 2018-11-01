@@ -93,6 +93,15 @@ body {
     width: 66vw;
 }
 
+.container-small {
+    font-size: 1vw;
+    margin:auto;
+    position: flex;
+    text-align: center;
+    top: 70px;
+    width: 66vw;
+}
+
 .fade-in {
     animation: fadeIn ease-in 1;
     -moz-animation: fadeIn ease-in 1;

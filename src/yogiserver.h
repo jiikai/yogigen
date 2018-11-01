@@ -105,15 +105,19 @@
 #ifdef HEROKU
     #define ACME_URI "/.well-known/acme-challenge"
 #endif
-// URIs for serving the css and fonts
+// URIs for serving js, css and fonts
 #define CSS_URI "/css/style.css"
 #define FONT_URI "/fonts"
+#define JS_URI "/js"
 
 // HTML template paths (relative to the running binary)
 #define YOGIGEN_INDEX_HTML "../resources/index.html"
 #define YOGIGEN_GEN_HTML "../resources/gen.html"
 #define YOGIGEN_PERMALINK_HTML "../resources/permalink.html"
 #define YOGIGEN_GETBYID_HTML "../resources/getbyid.html"
+
+// JavaScript paths
+#define YOGIGEN_JS_CP2CB "../resources/js/cp2cb-async-fallback.js"
 
 // CSS & font paths (relative to document root)
 #define YOGIGEN_STYLE_CSS "../resources/css/style.css"
