@@ -21,6 +21,7 @@ function cp2cbAsync(txt) {
     },
     function(err) {
       console.error("[ASYNC] Unable to copy: ", err);
+      return
     }
   );
 }
@@ -34,5 +35,5 @@ cp2cbBtn.addEventListener("click", function(event) {
   } else {
     cp2cbFallback(cp2cbTxt.value);
   }
-
+  cp2cbTxt.title = "Link copied to clipboard!";
 });
