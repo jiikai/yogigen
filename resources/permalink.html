@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <title>YogiGen - Create a permanent link</title>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="text/javascript" src="/js/cp2cb-async-fallback.js" async></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
   </head>
+
   <body>
     <form action="/gen" method="GET">
       <div id="wrapper">
@@ -15,10 +17,11 @@
     <div class="container-small">
       <textarea class="js-cp2cb-txt" rows="1" cols="58" readonly="readonly">%s%s/getbyid?%lx</textarea>
     </div>
-    <div id="wrapper2">
+    <div id="wrapper2-small">
       <div class="fade-in">
-        <button title="Click to copy link" onclick="this.title='Link copied to clipboard!'" class="js-cp2cb-btn" type="button">Copy link to clipboard</button>
+        <button title="Click to copy link" class="js-cp2cb-btn" type="button">Copy link to clipboard</button>
       </div>
     </div>
   </body>
+
 </html>

@@ -36,4 +36,5 @@ cp2cbBtn.addEventListener("click", function(event) {
     cp2cbFallback(cp2cbTxt.value);
   }
   cp2cbBtn.title = "Link copied to clipboard!";
+  cp2cbTxt.value = "Link copied! Be sure to share it with others!"
 });
