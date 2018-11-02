@@ -425,8 +425,9 @@ bstring YogiGen_generate(YogiGen *yogen)
     Format_String *formats = random_formats(yogen);
     check(formats, ERR_FAIL, "YOGIGEN", "retrieving resources");
     Substitution_Data *s_data = process_formats(yogen, formats);
-    check(s_data, ERR_FAIL_A, "YOGIGEN", "processing string", bdata(formats->str));
+    check(s_data, ERR_FAIL_A, "YOGIGEN", "processing string:\n", bdata(formats->str));
     bstring out = substitute_and_prettify(yogen, s_data);
+    check(out, ERR_FAIL_A, "YOGIGEN", "formatting output for:\n", bdata(formats->str));
     return out;
 error:
     YogiGen_close(yogen);

@@ -8,7 +8,7 @@ static PGconn *pg_open_nonblocking_conn(Connection *conn)
     db = PQconnectStart((char*) conn->conn_info->data);
     check(db, ERR_MEM, "FATAL");
     check(PQstatus(db) != CONNECTION_BAD, ERR_FAIL, "SERIOUS", "failed to establish database connection")
-    if (conn->conn_count++ > conn->cur_max) {
+    if (++conn->conn_count > conn->cur_max) {
         conn->cur_max = conn->conn_count;
     }
     struct pollfd pfds;
@@ -173,6 +173,7 @@ void close_conn(Connection *conn)
 {
     if (conn->db != NULL) {
         PQfinish(conn->db);
+        conn->conn_count--;
     }
     if (conn->conn_info) {
         bdestroy(conn->conn_info);

@@ -12,7 +12,7 @@
 #include "./dependencies/bstrlib.h"
 
 #define MAX_CONN_NUMBER 20
-#define CONN_TIMEOUT 7
+#define CONN_TIMEOUT 10
 
 // SQL query templates
 #define EXPR_SQL_SELECT_TEMPLATE \
