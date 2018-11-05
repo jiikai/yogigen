@@ -1,27 +1,33 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
   <head>
     <title>YogiGen - Create a permanent link</title>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <script type="text/javascript" src="/js/cp2cb-async-fallback.js" async></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
   </head>
-
   <body>
     <form action="/gen" method="GET">
       <div id="wrapper">
-        <button class="button" type="submit">Generate new</button>
+        <button class="button-primary" type="submit">Generate new</button>
       </div>
     </form>
     <div class="container-small">
-      <textarea class="js-cp2cb-txt" rows="1" cols="58" readonly="readonly">%s%s/getbyid?%lx</textarea>
+      <textarea class="textarea-url" rows="1" cols="58" contenteditable="false" readonly="readonly">%s%s/getbyid?%lx</textarea>
+      <div hidden class="alert alert-success" role="alert" id="success">
+        Link copied to clipboard!
+      </div>
+      <div hidden class="alert alert-failure" role="alert" id="failure">
+        Copy to clipboard failed. Try manually selecting and copying the link.
+      </div>
     </div>
     <div id="wrapper2-small">
       <div class="fade-in">
-        <button title="Click to copy link" class="js-cp2cb-btn" type="button">Copy link to clipboard</button>
+        <button title="Click to copy link" class="button-copy" type="button">
+          Copy to clipboard
+        </button>
       </div>
     </div>
   </body>
-
 </html>

@@ -23,6 +23,7 @@ INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('guide', 'guides'
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('empty', 'empties', 0, 0);
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('share', 'shares', 0, 0);
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('speak', 'speaks', 0, 0);
+INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('think', 'thinks', 0, 0);
 /*ADJECTIVE*/
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('happy', 'happily', 1, 0);
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('beautiful', 'beautifully', 1, 0);
@@ -38,6 +39,8 @@ INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('elevated', 'elev
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('straight', 'straightly', 1, 0);
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('simple', 'simply', 1, 0);
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('ultimate', 'ultimately', 1, 1);
+INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('serious', 'seriously', 1, 0);
+INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('honest', 'honestly', 1, 0);
 /*CONCEPT*/
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('compassion', 'compassion', 2, 0);
 INSERT INTO Expression (field_1, field_2, type, flags) VALUES ('love', 'love', 2, 0);
@@ -175,3 +178,4 @@ INSERT INTO Format_String (str, data, count) VALUES ('%s is %s.', X'204'::bigint
 INSERT INTO Format_String (str, data, count) VALUES ('%s %s.', X'500'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('%s is in your %s.', X'2C04'::bigint, 2);
 INSERT INTO Format_String (str, data, count) VALUES ('You don''t need %s, you are the %s.', X'404'::bigint, 2);
+INSERT INTO Format_String (str, data, count) VALUES ('Think %s and think %s.', X'2B03'::bigint, 2);
